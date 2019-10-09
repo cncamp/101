@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: centos
+  name: centos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: centos
+  template:
+    metadata:
+      labels:
+        run: centos
+    spec:
+      containers:
+      - command:
+        - tail
+        - -f
+        - /dev/null
+        image: centos
+        name: centos
+        readinessProbe:
+          exec:
+            command:
+            - cat
+            - /tmp/healthy
+          initialDelaySeconds: 5
+          periodSeconds: 5

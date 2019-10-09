@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: multi-container-pod
+spec:
+  containers:
+  - command:
+    - /bin/sh
+    - -c
+    - sleep 60
+    image: nginx
+    name: sleep
+    volumeMounts:
+    - mountPath: /shared-folder
+      name: shared-folder
+  - image: nginx
+    name: nginx
+    volumeMounts:
+    - mountPath: /shared-folder
+      name: shared-folder
+    - mountPath: /mnt
+      name: my-annotations
+      readOnly: true
+  dnsPolicy: Default
+  initContainers:
+  - command:
+    - /bin/sh
+    - -c
+    - touch /shared-folder/tmp-file
+    - sleep 10
+    env:
+    - name: POD_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.name
+    - name: POD_NAMESPACE
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.namespace
+    image: nginx
+    name: nginx-init
+    volumeMounts:
+    - mountPath: /shared-folder
+      name: shared-folder
+  restartPolicy: Always
+  volumes:
+  - emptyDir:
+    name: shared-folder
+  - downwardAPI:
+      defaultMode: 420
+      items:
+      - fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.annotations
+        path: annotations
+    name: my-annotations
