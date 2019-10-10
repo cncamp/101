@@ -1,6 +1,7 @@
 
 # setup local env
 https://minikube.sigs.k8s.io/docs/
+
 ## install virtualbox
 https://www.virtualbox.org/
 ## download minikube
@@ -18,13 +19,10 @@ minikube start \
     --image-mirror-country=cn \
     --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers
 ```
-
 # microsoft demo, run nginx as webserver
-
 ```
 kubectl run --image=nginx nginx
 ```
-
 # show running pod
 ```
 kubectl get po --show-labels -owide -w
@@ -91,5 +89,6 @@ kubectl create -f centos-readiness.yaml
 kubectl create -f multiple-container-pod.yaml
 ```
 # get customized columns
+```
 kubectl get svc  -o=custom-columns=NAME:.metadata.name,CREATED:'.metadata.annotations'
-
+```
