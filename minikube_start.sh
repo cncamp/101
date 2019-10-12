@@ -3,7 +3,8 @@ minikube start \
     --memory 4096 \
     --network-plugin=cni \
     --enable-default-cni \
-    --container-runtime=containerd \
     --bootstrapper=kubeadm \
-    --kubernetes-version v1.15.4
-
+    --kubernetes-version v1.15.4 \
+    --image-mirror-country=cn \
+    --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers
+    
