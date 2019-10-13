@@ -40,7 +40,7 @@ kubectl create ns istio-system
 helm install istio-init install/kubernetes/helm/istio-init  --namespace istio-system
 helm install istio install/kubernetes/helm/istio  --namespace istio-system
 ```
-# clean up
+# clean up (if failed)
 ```
 kubectl delete clusterrolebinding istio-init-admin-role-binding-istio-system
 kubectl delete clusterrole istio-init-istio-system
