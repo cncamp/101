@@ -20,7 +20,9 @@ minikube start \
 ```
 # Istio Setup
 # install helm 3 (must be 3.x which does not need tiller)
+```
 https://github.com/helm/helm/releases
+```
 # install istio
 ```
 git clone https://github.com/istio/istio.git
@@ -34,6 +36,8 @@ set
 ```
 hub: docker.io/istio
 tag: 1.3.3
+cpu: 1m
+memory: 1Mi
 ```
 ```
 kubectl create ns istio-system
