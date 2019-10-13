@@ -19,7 +19,7 @@ minikube start \
     --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers
 ```
 # Istio Setup
-# install helm 3 (must be 3 which does not need tiller)
+# install helm 3 (must be 3.x which does not need tiller)
 https://github.com/helm/helm/releases
 # install istio
 ```
