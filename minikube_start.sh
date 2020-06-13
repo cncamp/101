@@ -1,10 +1,10 @@
 minikube start \
-    --cpus 4 \
-    --memory 4096 \
+    --cpus=8 \
+    --v=4 \
+    --memory=8192 \
     --network-plugin=cni \
     --enable-default-cni \
     --bootstrapper=kubeadm \
-    --kubernetes-version v1.15.4 \
+    --kubernetes-version v1.18.3 \
     --image-mirror-country=cn \
     --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers
-    
