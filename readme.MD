@@ -1,5 +1,8 @@
 ## A basic instruction for Kubernetes setup and understanding
-1. [minikube-setup.md](1.minikube-setup.md)
+1. cluster setup
+[minikube-setup.md](1.minikube-setup.md)
+[kubeadmin-setup.md](1.1.kubeadmin-setup.md)
+[kind-setup.md](1.2.kind-setup.md)
 2. [understand-docker.md](2.understand-docker.md)
 3. [microservice.md](3.microservice.md)
 
