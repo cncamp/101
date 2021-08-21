@@ -260,7 +260,7 @@ registry.aliyuncs.com/google_containers/etcd                      3.5.0-0   0048
 coredns/coredns                                                   latest    8d147537fb7d   2 months ago   47.6MB
 registry.aliyuncs.com/google_containers/pause                     3.5       ed210e3e4a5b   5 months ago   683kB
 
-[root@k8s-master-prac ~]# docker tag coredns/coredns:latest registry.aliyuncs.com/google_containers/coredns:v1.8.4
+[root@k8s-master-prac ~]# docker tag coredns/coredns:latest registry.aliyuncs.com/google_containers/coredns/coredns:v1.8.4
 
 [root@k8s-master-prac ~]# docker rmi coredns/coredns:latest
 
@@ -286,6 +286,111 @@ Then you can join any number of worker nodes by running the following on each as
 kubeadm join 192.168.56.130:6443 --token i36hnn.8trjybo0msel27y6 \
 	--discovery-token-ca-cert-hash sha256:4667ecb1cbe7692b8bef1d3fac79be22a8cf3d2086f8fd5538e00fb2b08b9ee3
 ```
+- clusters
+```
+// master
+kubectl get pods --all-namespaces
+NAMESPACE     NAME                            READY   STATUS    RESTARTS      AGE
+kube-system   coredns-7f6cbbb7b8-9mg2x        0/1     Pending   0             8h
+kube-system   coredns-7f6cbbb7b8-fldxl        0/1     Pending   0             8h
+kube-system   etcd-vm210                      1/1     Running   4 (25m ago)   8h
+kube-system   kube-apiserver-vm210            1/1     Running   3 (25m ago)   8h
+kube-system   kube-controller-manager-vm210   1/1     Running   2 (25m ago)   8h
+kube-system   kube-proxy-562x7                1/1     Running   1 (25m ago)   8h
+kube-system   kube-proxy-dnwth                1/1     Running   1             95m
+kube-system   kube-proxy-w2vth                1/1     Running   0             54m
+kube-system   kube-scheduler-vm210            1/1     Running   5 (25m ago)   8h
+
+You must deploy a Container Network Interface (CNI) based Pod network add-on 
+so that your Pods can communicate with each other. 
+Cluster DNS (CoreDNS) will not start up before a network is installed.
+
+[root@k8s-master-prac ~]# kuletadm reset 
+[root@k8s-master-prac ~]# kubeadm init   
+    --image-repository registry.aliyuncs.com/google_containers  \
+    --kubernetes-version v1.22.0  \
+    --apiserver-advertise-address=192.168.56.210 \
+    --pod-network-cidr=192.168.1.0/16
+
+[root@k8s-master-prac ~]# wget https://docs.projectcalico.org/manifests/tigera-operator.yaml
+[root@k8s-master-prac ~]# wget https://docs.projectcalico.org/manifests/custom-resources.yaml
+// you should let the cidr match your network range, don not use the url to install directly.
+[root@k8s-master-prac ~]# vim custom-resources.yaml
+  cidr: 192.168.0.0/16  => cidr: 192.168.1.0/16
+[root@k8s-master-prac ~]# kubectl create -f tigera-operator.yaml
+[root@k8s-master-prac ~]# kubectl create -f custom-resources.yaml
+
+[root@k8s-master-prac ~]# watch kubectl get pods -n calico-system
+Every 2.0s: kubectl get pods -n calico-system                                                                                                                                                                         Sat Aug 21 02:22:02 2021
+
+NAME                                       READY   STATUS    RESTARTS   AGE
+calico-kube-controllers-868b656ff4-5fh56   1/1     Running   0          56m
+calico-node-4729c                          1/1     Running   0          56m
+calico-node-74xwl                          1/1     Running   0          51m
+calico-node-fgs7j                          1/1     Running   1          51m
+calico-typha-884bbd9c6-dd7lm               1/1     Running   1          51m
+calico-typha-884bbd9c6-kktwc               1/1     Running   4          51m
+calico-typha-884bbd9c6-xj9rc               1/1     Running   0          56m
+
+[root@k8s-master-prac ~]# watch kubectl get nodes
+NAME    STATUS   ROLES                  AGE   VERSION
+vm210   Ready    control-plane,master   59m   v1.22.0
+vm211   Ready    <none>                 52m   v1.22.0
+vm212   Ready    <none>                 51m   v1.22.1
+
+------------------------------------------------------
+
+// node1
+yum remove docker \
+                  docker-client \
+                  docker-client-latest \
+                  docker-common \
+                  docker-latest \
+                  docker-latest-logrotate \
+                  docker-logrotate \
+                  docker-engine
+                 
+yum install -y yum-utils
+yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+yum install docker-ce docker-ce-cli containerd.io
+systemctl start docker
+
+yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+systemctl enable --now kubelet
+
+kubeadm join 192.168.56.210:6443 --token s2n0yr.0g5ujjrfthvjvr07 \
+--discovery-token-ca-cert-hash sha256:81974851f2e10bdb8bc401ebe2e0b16dc500bd13261342d80d9643ef4dc94a05
+
+[kubelet-check] It seems like the kubelet isn't running or healthy.
+[kubelet-check] The HTTP call equal to 'curl -sSL http://localhost:10248/healthz' failed with error: Get "http://localhost:10248/healthz": dial tcp [::1]:10248: connect: connection refused.
+
+// solve the problem above
+[root@k8s-master-prac ~]#vim /etc/docker/daemon.json
+{
+  "exec-opts": ["native.cgroupdriver=systemd"]
+}
+[root@k8s-master-prac ~]#systemctl daemon-reload
+[root@k8s-master-prac ~]#systemctl restart docker
+[root@k8s-master-prac ~]#systemctl restart kubelet
+
+[root@vm211 ~]# kubectl get nodes
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
+
+kubectl version -o json
+kubectl cluster-info
+[root@vm211 ~]# kubectl cluster-info
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
+
+[root@k8s-master-prac ~] systemctl status kubelet
+[root@k8s-master-prac ~] journalctl -xeu kubelet
+// Unable to update cni config" err="no networks found in /etc/cni/net.d
+// if you encounter this problem, just to redo all the activity above on the code.
+
+```
 
 ## summary
 - What we need to note during the entire installation process is that don't just to search the key you see with command 'systemctl status kubelet' or 'journalctl -u kubelet'
@@ -309,4 +414,7 @@ E0820 13:16:23.223925   31791 server.go:158] "Failed to parse kubelet flag" err=
 - [kubelet failed with kubelet cgroup driver: “cgroupfs” is different from docker cgroup driver: “systemd”](https://stackoverflow.com/questions/45708175/kubelet-failed-with-kubelet-cgroup-driver-cgroupfs-is-different-from-docker-c)
 - [Configuring each kubelet in your cluster using kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration/#the-kubelet-drop-in-file-for-systemd)
 - [Installing kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
+- [Quickstart for Calico on Kubernetes](https://docs.projectcalico.org/getting-started/kubernetes/quickstart)
 - [kubeadm安装k8s完整教程](https://segmentfault.com/a/1190000021209788)
+
+
