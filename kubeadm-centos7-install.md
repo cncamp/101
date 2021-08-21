@@ -17,7 +17,7 @@
 - hard disk
   - create a virtual hard disk now
   - choose VDI
-  - Fixed siez
+  - Fixed size
   - 100GB
 - network
   - adapter1
@@ -363,6 +363,7 @@ systemctl enable --now kubelet
 kubeadm join 192.168.56.210:6443 --token s2n0yr.0g5ujjrfthvjvr07 \
 --discovery-token-ca-cert-hash sha256:81974851f2e10bdb8bc401ebe2e0b16dc500bd13261342d80d9643ef4dc94a05
 
+[root@k8s-master-prac ~]# kubectl get nodes
 [kubelet-check] It seems like the kubelet isn't running or healthy.
 [kubelet-check] The HTTP call equal to 'curl -sSL http://localhost:10248/healthz' failed with error: Get "http://localhost:10248/healthz": dial tcp [::1]:10248: connect: connection refused.
 
@@ -388,7 +389,7 @@ The connection to the server localhost:8080 was refused - did you specify the ri
 [root@k8s-master-prac ~] systemctl status kubelet
 [root@k8s-master-prac ~] journalctl -xeu kubelet
 // Unable to update cni config" err="no networks found in /etc/cni/net.d
-// if you encounter this problem, just to redo all the activity above on the code.
+// if you encounter this problem, just to redo all the activity above on the node.
 
 ```
 
