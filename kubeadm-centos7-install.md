@@ -260,7 +260,7 @@ registry.aliyuncs.com/google_containers/etcd                      3.5.0-0   0048
 coredns/coredns                                                   latest    8d147537fb7d   2 months ago   47.6MB
 registry.aliyuncs.com/google_containers/pause                     3.5       ed210e3e4a5b   5 months ago   683kB
 
-[root@k8s-master-prac ~]# docker tag coredns/coredns:latest registry.aliyuncs.com/google_containers/coredns/coredns:v1.8.4
+[root@k8s-master-prac ~]# docker tag coredns/coredns:latest registry.aliyuncs.com/google_containers/coredns:v1.8.4
 
 [root@k8s-master-prac ~]# docker rmi coredns/coredns:latest
 
