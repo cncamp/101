@@ -1,0 +1,312 @@
+## Preparation
+- [virtualbox6.1](https://www.virtualbox.org/)
+- [centos iso](https://mirrors.aliyun.com/centos/7/isos/x86_64/)
+## install
+
+### virtualbox
+- create a new box
+  - name
+  - folder path
+  - type: Linux
+  - version: Other Linux (64-bit)
+- memory
+  - 4096M
+- cpu
+  - number:2
+  - peak load: 100%
+- hard disk
+  - create a virtual hard disk now
+  - choose VDI
+  - Fixed siez
+  - 100GB
+- network
+  - adapter1
+    - Attached to: NAT
+    - Advanced: default
+    - notice: remember `MAC Address`(080027A71D80), we could use it later for linux setting
+  - adapter2
+    - Attached to: Host-only Adapter
+    - Name: vboxnet0
+    - advanced:default
+    - notice: remember `MAC Address(0800271EED5C)`, we could use it later for linux setting
+
+- set iso file
+  - choose your box, right click it, then choose setting
+  - storage
+  - choose the logo which is like a CD
+    - Attributes => Optical Drive: (click the CD logo and choose your centos iso file)
+
+### centos7
+- double click your box
+- start (you could make sure the ios again)
+- install centos7
+- language:English
+- Date&Time: Asia/Shanghai
+- System
+  - Installation destination: choose your vdi 
+- Begin installation
+- Root password
+- reboot
+- login
+- set network adapter
+  - vi /etc/sysconfig/network-scripts/ifcfg-enp0s3
+    ```
+    HWADDR=08:00:27:0A:E8:8F
+    TYPE=Ethernet
+    PROXY_METHOD=none
+    BROWSER_ONLY=no
+    BOOTPROTO=dhcp
+    DEFROUTE=yes
+    IPV4_FAILURE_FATAL=no
+    IPV6INIT=yes
+    IPV6_AUTOCONF=yes
+    IPV6_DEFROUTE=yes
+    IPV6_FAILURE_FATAL=no
+    IPV6_ADDR_GEN_MODE=stable-privacy
+    NAME=enp0s3
+    UUID=a88c90f7-f616-48ab-ba82-335c2d5c652d
+    DEVICE=enp0s3
+    ONBOOT=yes
+    ```
+    - vi /etc/sysconfig/network-scripts/ifcfg-enp0s8
+    ```
+    HWADDR=08:00:27:DC:76:AA
+    TYPE=Ethernet
+    PROXY_METHOD=none
+    BROWSER_ONLY=no
+    BOOTPROTO=static
+    DEFROUTE=yes
+    IPV4_FAILURE_FATAL=no
+    IPV6INIT=yes
+    IPV6_AUTOCONF=yes
+    IPV6_DEFROUTE=yes
+    IPV6_FAILURE_FATAL=no
+    IPV6_ADDR_GEN_MODE=stable-privacy
+    NAME=enp0s8 // Note that it is consistent with the file name suffix
+    UUID=a88c90f7-f616-48ab-ba82-335c2d5c652d
+    DEVICE=enp0s8 // Note that it is consistent with the file name suffix
+    ONBOOT=yes
+    NM_CONTROLLED=yes
+    IPADDR=192.168.56.200 
+    NETMASK=255.255.255.0
+    GATEWAY=192.168.56.1
+    DNS1=8.8.8.8
+    ```
+- vi /etc/hostname
+  - k8s-master-prac
+  - notice: don't use underline and special characters
+- vi /etc/hosts
+  - 127.0.0.1 k8s-master-prac
+- shutdown -r
+- login again
+- ping a website you know. if you could visit it which we could make sure the network is ok now.
+- next, you could use item2 to make the next setps, because it's quite easy to edit your content.
+- iptables
+```
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+br_netfilter
+EOF
+
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sudo sysctl --system
+```
+- firewall
+```
+systemctl stop firewalld
+systemctl disable firewalld
+systemctl status firewalld
+
+```
+- SELinux
+```
+vi /etc/selinux/config
+
+# This file controls the state of SELinux on the system.
+# SELINUX= can take one of these three values:
+#     enforcing - SELinux security policy is enforced.
+#     permissive - SELinux prints warnings instead of enforcing.
+#     disabled - No SELinux policy is loaded.
+#SELINUX=enforcing
+# SELINUXTYPE= can take one of three values:
+#     targeted - Targeted processes are protected,
+#     minimum - Modification of targeted policy. Only selected processes are protected.
+#     mls - Multi Level Security protection.
+#SELINUXTYPE=targeted 
+SELINUX=disabled 
+```
+- swap 
+```
+// temp turn off
+[root@k8s-master-prac ~]# swapoff -a
+// Permanently turn off
+[root@k8s-master-prac ~]# vi /etc/fstab
+
+#
+# /etc/fstab
+# Created by anaconda on Sun Aug 22 00:58:48 2021
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/centos-root /                       xfs     defaults        0 0
+UUID=be6fcb6b-d425-4cc6-9e97-0bba2b1c7236 /boot                   xfs     defaults        0 0
+/dev/mapper/centos-home /home                   xfs     defaults        0 0
+#/dev/mapper/centos-swap swap                    swap    defaults        0 0  // Comment out the current line
+
+[root@k8s-master-prac ~]# shutdown -r
+```
+
+- timezone sync
+```
+yum install ntp
+systemctl enable ntpd
+systemctl start ntpd
+timedatectl set-timezone Asia/Shanghai
+timedatectl set-ntp yes
+ntpq -p
+```
+### kubedam
+- [install docker](https://docs.docker.com/engine/install/centos/)
+  - note：don't install docker with centos, you should choose docker-ce
+- yum source
+```
+vi /etc/yum.repos.d/kubernetes.repo
+
+# choose the right baseurl which you feel better in your country.
+[kubernetes]
+name=Kubernetes
+baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/
+enabled=1
+gpgcheck=0
+```
+- kubelet kubeadm install
+```
+yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+systemctl enable --now kubelet
+```
+- system starts docker
+```
+systemctl enable docker && systemctl start docker
+```
+
+- kubeadm
+```
+[root@k8s-master-prac ~]# kubeadm init   --image-repository registry.aliyuncs.com/google_containers   --kubernetes-version v1.22.0   --apiserver-advertise-address=192.168.56.130
+[init] Using Kubernetes version: v1.22.0
+[preflight] Running pre-flight checks
+error execution phase preflight: [preflight] Some fatal errors occurred:
+	[ERROR NumCPU]: the number of available CPUs 1 is less than the required 2
+[preflight] If you know what you are doing, you can make a check non-fatal with `--ignore-preflight-errors=...`
+To see the stack trace of this error execute with --v=5 or higher
+
+[root@k8s-master-prac ~]# kubelet --cgroupDriver
+E0821 18:06:43.647211    8799 server.go:158] "Failed to parse kubelet flag" err="unknown flag: --cgroupDriver"
+
+[root@k8s-master-prac ~]# systemctl status kubelet
+● kubelet.service - kubelet: The Kubernetes Node Agent
+   Loaded: loaded (/usr/lib/systemd/system/kubelet.service; enabled; vendor preset: disabled)
+  Drop-In: /usr/lib/systemd/system/kubelet.service.d
+           └─10-kubeadm.conf
+   Active: activating (auto-restart) (Result: exit-code) since 六 2021-08-21 18:19:45 CST; 5s ago
+     Docs: https://kubernetes.io/docs/
+  Process: 8186 ExecStart=/usr/bin/kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_CONFIG_ARGS $KUBELET_KUBEADM_ARGS $KUBELET_EXTRA_ARGS (code=exited, status=1/FAILURE)
+ Main PID: 8186 (code=exited, status=1/FAILURE)
+
+8月 21 18:19:45 k8s-master-prac systemd[1]: kubelet.service: main process exited, code=exited, status=1/FAILURE
+8月 21 18:19:45 k8s-master-prac systemd[1]: Unit kubelet.service entered failed state.
+8月 21 18:19:45 k8s-master-prac systemd[1]: kubelet.service failed.
+
+[root@k8s-master-prac ~]#vim /etc/docker/daemon.json
+{
+  "exec-opts": ["native.cgroupdriver=systemd"]
+}
+[root@k8s-master-prac ~]#systemctl daemon-reload
+[root@k8s-master-prac ~]#systemctl restart docker
+// unable to configure the Docker daemon with file /etc/docker/daemon.json
+// choose to install docker-ce will solve this problem.
+
+[root@k8s-master-prac ~]#systemctl restart kubelet
+
+// run kuebeadm again
+ERROR: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+errors pretty printing info
+, error: exit status 1
+	[ERROR Service-Docker]: docker service is not active, please run 'systemctl start docker.service'
+
+[root@k8s-master-prac ~]#systemctl start docker.service
+
+error execution phase preflight: [preflight] Some fatal errors occurred:
+	[ERROR ImagePull]: failed to pull image registry.aliyuncs.com/google_containers/coredns:v1.8.4: output: Error response from daemon: manifest for registry.aliyuncs.com/google_containers/coredns:v1.8.4 not found: manifest unknown: manifest unknown
+
+[root@k8s-master-prac ~]# docker pull coredns/coredns
+Using default tag: latest
+latest: Pulling from coredns/coredns
+c6568d217a00: Pull complete
+bc38a22c706b: Pull complete
+Digest: sha256:6e5a02c21641597998b4be7cb5eb1e7b02c0d8d23cce4dd09f4682d463798890
+Status: Downloaded newer image for coredns/coredns:latest
+docker.io/coredns/coredns:latest
+
+[root@k8s-master-prac ~]# docker images
+REPOSITORY                                                        TAG       IMAGE ID       CREATED        SIZE
+registry.aliyuncs.com/google_containers/kube-apiserver            v1.22.0   838d692cbe28   2 weeks ago    128MB
+registry.aliyuncs.com/google_containers/kube-controller-manager   v1.22.0   5344f96781f4   2 weeks ago    122MB
+registry.aliyuncs.com/google_containers/kube-proxy                v1.22.0   bbad1636b30d   2 weeks ago    104MB
+registry.aliyuncs.com/google_containers/kube-scheduler            v1.22.0   3db3d153007f   2 weeks ago    52.7MB
+registry.aliyuncs.com/google_containers/etcd                      3.5.0-0   004811815584   2 months ago   295MB
+coredns/coredns                                                   latest    8d147537fb7d   2 months ago   47.6MB
+registry.aliyuncs.com/google_containers/pause                     3.5       ed210e3e4a5b   5 months ago   683kB
+
+[root@k8s-master-prac ~]# docker tag coredns/coredns:latest registry.aliyuncs.com/google_containers/coredns/coredns:v1.8.4
+
+[root@k8s-master-prac ~]# docker rmi coredns/coredns:latest
+
+// success infomation
+Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 192.168.56.130:6443 --token i36hnn.8trjybo0msel27y6 \
+	--discovery-token-ca-cert-hash sha256:4667ecb1cbe7692b8bef1d3fac79be22a8cf3d2086f8fd5538e00fb2b08b9ee3
+```
+
+## summary
+- What we need to note during the entire installation process is that don't just to search the key you see with command 'systemctl status kubelet' or 'journalctl -u kubelet'
+- we must pay more attention to the args like $KUBELET_EXTRA_ARGS when we encounter some errors.
+```
+'Process: 8998 ExecStart=/usr/bin/kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_CONFIG_ARGS $KUBELET_KUBEADM_ARGS $KUBELET_EXTRA_ARGS (code=exited, status=1/FAILURE)'
+```
+### Errors
+- The HTTP call equal to 'curl -sSL http://localhost:10248/healthz' failed with error: Get "http://localhost:10248/healthz": dial tcp [::1]:10248: connect: connection refused.
+  - systemctl restart kubelet
+- [root@vm210 ~]# kubelet --cgroupDriver
+E0820 13:16:23.223925   31791 server.go:158] "Failed to parse kubelet flag" err="unknown flag: --cgroupDriver"
+  - EnvironmentFile=-/var/lib/kubelet/kubeadm-flags.env
+  - remove the arg `cgroupDriver`
+  - systemctl restart kubelet
+- check network
+  - ip a
+  - cat /etc/resolv.conf
+## References
+- [The kubelet drop-in file for systemd](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration/#the-kubelet-drop-in-file-for-systemd) 
+- [kubelet failed with kubelet cgroup driver: “cgroupfs” is different from docker cgroup driver: “systemd”](https://stackoverflow.com/questions/45708175/kubelet-failed-with-kubelet-cgroup-driver-cgroupfs-is-different-from-docker-c)
+- [Configuring each kubelet in your cluster using kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration/#the-kubelet-drop-in-file-for-systemd)
+- [Installing kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
+- [kubeadm安装k8s完整教程](https://segmentfault.com/a/1190000021209788)
