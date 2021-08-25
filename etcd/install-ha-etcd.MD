@@ -39,3 +39,16 @@ mv certs /tmp/etcd-certs
 ./start-infra1.sh
 ./start-infra0.sh
 ```
+### backup
+```
+etcdctl --endpoints https://127.0.0.1:3379 --cert /tmp/etcd-certs/certs/127.0.0.1.pem --key /tmp/etcd-certs/certs/127.0.0.1-key.pem --cacert /tmp/etcd-certs/certs/ca.pem snapshot save snapshot.db
+```
+### delete data
+```
+kill process of infra0 infra1 infra2
+```
+```
+rm -rf /tmp/etcd
+```
+### restore
+
