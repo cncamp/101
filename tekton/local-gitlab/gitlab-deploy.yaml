@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitlab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: gitlab
+  template:
+    metadata:
+      labels:
+        run: gitlab
+    spec:
+      containers:
+      - image: gitlab/gitlab-ee
+        imagePullPolicy: IfNotPresent
+        name: gitlab
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitlab
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: gitlab
+  type: NodePort
