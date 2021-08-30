@@ -3,6 +3,25 @@ kind: ServiceAccount
 metadata:
   name: cncamp-gitlab-sa
 ---
+apiVersion: v1 
+kind: Secret 
+metadata: 
+  name: cncamp-gitlab-secret 
+type: Opaque 
+stringData: 
+  secretToken: '1234567' 
+--- 
+apiVersion: v1 
+kind: Secret 
+metadata: 
+  name: cncamp-gitlab-auth
+  annotations: 
+    tekton.dev/git-1: http://gitlab.default.svc.cluster.local
+type: kubernetes.io/basic-auth 
+stringData: 
+  username: root
+  password: lzKyburULL0j4qnumSNI2fZycQCMkw8Is5t6D5iy790= 
+---
 apiVersion: triggers.tekton.dev/v1alpha1 
 kind: EventListener 
 metadata: 
@@ -27,72 +46,70 @@ spec:
     template: 
       ref: gitlab-triggertemplate
 ---
-apiVersion: v1 
-kind: Secret 
-metadata: 
-  name: cncamp-gitlab-secret 
-type: Opaque 
-stringData: 
-  secretToken: '1234567' 
---- 
-apiVersion: v1 
-kind: Secret 
-metadata: 
-  name: cncamp-gitlab-auth
-  annotations: 
-    tekton.dev/git-1: http://gitlab.default.svc.cluster.local
-type: kubernetes.io/basic-auth 
-stringData: 
-  username: root
-  password: lzKyburULL0j4qnumSNI2fZycQCMkw8Is5t6D5iy790= 
----
 apiVersion: triggers.tekton.dev/v1alpha1 
 kind: TriggerBinding 
 metadata: 
-  name: gitlab-binding 
+  name: gitlab-binding
 spec: 
   params: 
     - name: gitrevision 
       value: $(body.checkout_sha) 
     - name: gitrepositoryurl 
-      value: http://gitlab.default.svc.cluster.local/root/test.git
+      value: http://gitlab/root/test.git
 ---
 apiVersion: triggers.tekton.dev/v1alpha1 
 kind: TriggerTemplate 
 metadata: 
   name: gitlab-triggertemplate 
-spec: 
+spec:
   params:
-    - name: gitrevision 
-    - name: gitrepositoryurl 
+  - name: gitrevision
+  - name: gitrepositoryurl
   resourcetemplates:
-    - apiVersion: tekton.dev/v1beta1 
-      kind: TaskRun
-      metadata: 
-        generateName: gitlab-run-
+    - kind: PipelineRun
+      apiVersion: tekton.dev/v1beta1
+      metadata:
+        generateName: gitlab-pipeline-run-
       spec: 
         serviceAccountName: cncamp-gitlab-sa
-        taskSpec:
-          resources: 
-            inputs:
-              - name: source 
-                type: git 
-          steps: 
-            - name: show-path 
-              image: ubuntu
-              script: | 
-                #! /bin/bash 
-                ls -la $(resources.inputs.source.path) 
+        pipelineSpec:
+          tasks:
+          - name: checkout
+            taskRef:
+              name: gitlab-checkout
+            resources:
+              inputs:
+              - name: source
+                resource: source
+          resources:
+          - name: source
+            type: git
         resources:
-          inputs: 
-            - name: source
-              resourceSpec:
-                type: git 
-                params: 
-                  - name: revision 
-                    value: $(tt.params.gitrevision)
-                  - name: url 
-                    value: $(tt.params.gitrepositoryurl) 
+        - name: source
+          resourceSpec:
+            type: git
+            params:
+            - name: revision
+              value: $(tt.params.gitrevision)
+            - name: url
+              value: $(tt.params.gitrepositoryurl)
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: gitlab-checkout
+spec:
+  resources:
+    inputs:
+      - name: source
+        type: git
+  steps:
+    - name: show-path
+      image: ubuntu
+      script: |
+        #! /bin/bash
+        cat /etc/resolv.conf
+        ls -la $(resources.inputs.source.path)
 ---
 apiVersion: v1 
 kind: ServiceAccount 
