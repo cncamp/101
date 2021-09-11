@@ -49,6 +49,7 @@ metadata:
 spec:
   kubeadmConfigSpec:
     clusterConfiguration:
+      imageRepository: registry.aliyuncs.com/google_containers
       apiServer:
         certSANs:
         - localhost

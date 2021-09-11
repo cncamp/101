@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: object-counts
+  namespace: default
+spec:
+  hard:
+    configmaps: "20"
+    secrets: "20"
+    services: "10"
+    services.loadbalancers: "20"
+    services.nodeports: "30"
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: best-effort-pods
+spec:
+  hard:
+    pods: "10"
+  scopes:
+  - BestEffort
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: high-qos-limit-requests
+spec:
+  hard:
+    limits.cpu: 8
+    limits.memory: 24Gi
+    pods: 10
+    requests.cpu: 4
+    requests.memory: 12Gi
+  scopes:
+  - NotBestEffort
