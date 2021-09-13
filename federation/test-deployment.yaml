@@ -1,0 +1,25 @@
+apiVersion: types.kubefed.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: test-deployment
+spec:
+  template:
+    metadata:
+      name: mynginx
+    spec:
+      replicas: 3
+      selector:
+        matchLabels:
+          run: mynginx
+      template:
+        metadata:
+          labels:
+            run: mynginx
+        spec:
+          containers:
+          - image: nginx:latest
+            imagePullPolicy: IfNotPresent
+            name: nginx
+  placement:
+    clusters:
+    - name: cluster1
