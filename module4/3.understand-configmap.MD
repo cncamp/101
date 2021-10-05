@@ -1,0 +1,17 @@
+# configmap
+```
+cat game.properties
+
+#configmap from file
+kubectl create configmap game-config --from-file=game.properties
+kubectl create configmap game-env-config --from-env-file=game.properties
+kubectl get configmap -oyaml game-config
+```
+## configmap from literal
+```
+kubectl create configmap special-config --from-literal=special.how=very --from-literal=special.type=charm
+#downward api pod
+kubectl create -f downward-api-pod.yaml
+kubectl get po downward-api-pod
+kubectl logs -f downward-api-pod
+```

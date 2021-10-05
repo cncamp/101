@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: toolbox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: toolbox
+  template:
+    metadata:
+      labels:
+        app: toolbox
+        access: "true"
+    spec:
+      containers:
+        - name: toolbox
+          image: centos
+          command:
+          - tail
+          - -f
+          - /dev/null
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: default-deny
+  namespace: ns-calico-01
+spec:
+  podSelector: {}
+---
