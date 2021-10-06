@@ -8,7 +8,7 @@ import (
 
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
-	authentication "k8s.io/api/authentication/v1"
+	authentication "k8s.io/api/authentication/v1beta1"
 )
 
 func main() {
