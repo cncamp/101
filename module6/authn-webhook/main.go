@@ -63,5 +63,5 @@ func main() {
 			"status":     trs,
 		})
 	})
-	log.Fatal(http.ListenAndServe(":3000", nil))
+	log.Println(http.ListenAndServe(":3000", nil))
 }

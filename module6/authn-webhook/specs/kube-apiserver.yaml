@@ -97,6 +97,7 @@ spec:
           readOnly: true
         - name: webhook-config
           mountPath: /etc/config
+          readOnly: true
   hostNetwork: true
   priorityClassName: system-node-critical
   securityContext:
@@ -127,9 +128,8 @@ spec:
         path: /usr/share/ca-certificates
         type: DirectoryOrCreate
       name: usr-share-ca-certificates
-    - name: config-volume
-      configMap:
-        # Provide the name of the ConfigMap containing the files you want
-        # to add to the container
-        name: webhook-config
+    - hostPath:
+        path: /etc/config
+        type: DirectoryOrCreate
+      name: webhook-config
 status: {}
