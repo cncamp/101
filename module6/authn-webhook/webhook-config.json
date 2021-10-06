@@ -6,7 +6,7 @@
     {
       "name": "github-authn",
       "cluster": {
-        "server": "http://webhook:3000/authenticate"
+        "server": "http://192.168.34.2:3000/authenticate"
       }
     }
   ],
