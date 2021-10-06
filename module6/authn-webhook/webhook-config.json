@@ -1,0 +1,31 @@
+{
+  "kind": "Config",
+  "apiVersion": "v1",
+  "preferences": {},
+  "clusters": [
+    {
+      "name": "github-authn",
+      "cluster": {
+        "server": "http://192.168.34.2:3000/authenticate"
+      }
+    }
+  ],
+  "users": [
+    {
+      "name": "authn-apiserver",
+      "user": {
+        "token": "secret"
+      }
+    }
+  ],
+  "contexts": [
+    {
+      "name": "webhook",
+      "context": {
+        "cluster": "github-authn",
+        "user": "authn-apiserver"
+      }
+    }
+  ],
+  "current-context": "webhook"
+}
