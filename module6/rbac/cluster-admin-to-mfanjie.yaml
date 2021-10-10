@@ -7,6 +7,9 @@ subjects:
   - kind: User
     name: mfanjie
     apiGroup: rbac.authorization.k8s.io
+#  - kind: ServiceAccount
+#    name: default
+#    namespace: kube-system
 roleRef:
   kind: ClusterRole
   name: cluster-admin
