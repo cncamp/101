@@ -12,6 +12,7 @@ nohup etcd --name infra0 \
 --advertise-client-urls https://127.0.0.1:3379 \
 --initial-cluster-token etcd-cluster-1 \
 --initial-cluster infra0=https://127.0.0.1:3380,infra1=https://127.0.0.1:4380,infra2=https://127.0.0.1:5380 \
+--force-new-cluster \
 --client-cert-auth --trusted-ca-file=/tmp/etcd-certs/certs/ca.pem \
 --cert-file=/tmp/etcd-certs/certs/127.0.0.1.pem \
 --key-file=/tmp/etcd-certs/certs/127.0.0.1-key.pem \
