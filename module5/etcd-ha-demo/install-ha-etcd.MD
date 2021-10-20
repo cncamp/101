@@ -1,10 +1,3 @@
-### copy etcd from container to host
-```
-docker ps|grep etcd
-```
-```
-docker cp 88231e147e48:/usr/local/bin/etcd /usr/local/bin
-```
 ### install cfssl
 ```
 apt install golang-cfssl
