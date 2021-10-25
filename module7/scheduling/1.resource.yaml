@@ -15,10 +15,10 @@ spec:
       containers:
         - name: nginx
           image: nginx
-        resources:
-          limits:
-            memory: 1Gi
-            cpu: 1
-          requests:
-            memory: 256Mi
-            cpu: 100m
+          resources:
+            limits:
+              memory: 1Gi
+              cpu: 1
+            requests:
+              memory: 256Mi
+              cpu: 100m
