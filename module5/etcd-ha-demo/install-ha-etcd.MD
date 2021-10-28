@@ -51,6 +51,3 @@ kill process of infra0 infra1 infra2
 ```
 ./restore.sh
 ```
-```
-./restart-all.sh
-```
