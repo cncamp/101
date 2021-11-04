@@ -1,35 +1,49 @@
+### Start authservice
 
-### start authservice
-```
+```sh
 make build
 ./bin/amd64/authn-webhook
 ```
-### create webhook config
-```
+
+### Create webhook config
+
+```sh
 mkdir -p /etc/config
 cp webhook-config.json /etc/config
 ```
-### backup old apiserver
-```
+
+### Backup old apiserver
+
+```sh
 cp /etc/kubernetes/manifests/kube-apiserver.yaml ~/kube-apiserver.yaml
 ```
-### update apiserver configuration to enable webhook
-```
+
+### Update apiserver configuration to enable webhook
+
+```sh
 cp specs/kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml
 ```
-### create a personal access token in github and put your github personal access token to kubeconfig
-```
+
+### Create a personal access token in github and put your github personal access token to kubeconfig
+
+```sh
 vi ~/.kube/config
+```
+
+```yaml
 - name: mfanjie
   user:
   token: <mytoken>
 ```
-### get po by mfanjie
-```
+
+### Get pods by mfanjie
+
+```sh
 kubectl get po --user mfanjie
 ```
-### reset the env
-```
-cp ~/kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml 
-```
 
+### Reset the env
+
+```sh
+cp ~/kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml
+```
