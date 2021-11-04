@@ -45,7 +45,7 @@ rm -rf /tmp/etcd
 ```
 ### kill process
 ```
-ps -ef|grep "/tmp/etcd/infra"|grep -v grep|awk '{print $2}'|xargs kill
+kill process of infra0 infra1 infra2
 ```
 ### restore
 ```
