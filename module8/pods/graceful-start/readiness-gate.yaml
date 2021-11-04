@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  lables:
+    app: readiness-gate
+  name: readiness-gate
+spec:
+  readinessGates:
+    - conditionType: "www.example.com/feature-1"
+  containers:
+    - name: readiness-gate
+      image: nginx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: readiness-gate
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: readiness-gate

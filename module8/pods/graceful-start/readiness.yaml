@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: http-probe
+spec:
+  containers:
+    - name: http-probe
+      image: nginx
+      readinessProbe:
+        httpGet:
+          ### this probe will fail with 404 error code
+          ### only httpcode between 200-400 is retreated as success
+          path: /healthz
+          port: 80
+        initialDelaySeconds: 30
+        periodSeconds: 5
+        successThreshold: 2
