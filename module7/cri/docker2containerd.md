@@ -28,4 +28,9 @@ systemctl daemon-reload
 systemctl restart containerd 
 systemctl restart kubelet 
 ```
-
+### config crictl to set correct endpoint
+```
+cat <<EOF | sudo tee /etc/crictl.yaml
+runtime-endpoint: unix:///run/containerd/containerd.sock
+EOF
+```
