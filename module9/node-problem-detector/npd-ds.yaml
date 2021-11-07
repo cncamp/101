@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: node-problem-detector-v0.1
-  namespace: kube-system
   labels:
     k8s-app: node-problem-detector
     version: v0.1

@@ -1,4 +1,23 @@
-
-echo "task docker:7 blocked for more than 300 seconds." |systemd-cat -t kernel
-
-echo "Error trying v2 registry: failed to register layer: rename /var/lib/docker/image/test /var/lib/docker/image/ddd: directory not empty.*" |systemd-cat -t docker
+### download helm chart and unzip
+```
+helm pull deliveryhero/node-problem-detector
+tar -zxvf node-problem-detector-2.0.9.tgz
+```
+### change image
+```
+vi node-problem-detector/values.yaml
+```
+```
+image:
+  repository: cncamp/node-problem-detector
+  tag: v0.8.10
+  pullPolicy: IfNotPresent
+```
+### helm chart install
+```
+helm install npd ./node-problem-detector
+```
+```
+sudo sh -c "echo 'kernel: BUG: unable to handle kernel NULL pointer dereference at TESTING' >> /dev/kmsg"
+```
+### 
