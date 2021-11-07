@@ -15,10 +15,8 @@ spec:
       containers:
         - name: nginx
           image: nginx
-          readinessProbe:
-            exec:
-              command:
-                - cat
-                - /tmp/healthy
-            initialDelaySeconds: 5
-            periodSeconds: 5
+          resources:
+            limits:
+              cncamp.com/reclaimed-cpu: 3
+            requests:
+              cncamp.com/reclaimed-cpu: 3

@@ -15,10 +15,3 @@ spec:
       containers:
         - name: nginx
           image: nginx
-          readinessProbe:
-            exec:
-              command:
-                - cat
-                - /tmp/healthy
-            initialDelaySeconds: 5
-            periodSeconds: 5

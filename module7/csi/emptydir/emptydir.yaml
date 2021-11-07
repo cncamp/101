@@ -15,10 +15,9 @@ spec:
       containers:
         - name: nginx
           image: nginx
-          readinessProbe:
-            exec:
-              command:
-                - cat
-                - /tmp/healthy
-            initialDelaySeconds: 5
-            periodSeconds: 5
+          volumeMounts:
+          - mountPath: /cache
+            name: cache-volume
+      volumes:
+      - name: cache-volume
+        emptyDir: {}
