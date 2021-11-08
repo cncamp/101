@@ -1,4 +1,4 @@
-apiVersion: cluster.x-k8s.io/v1alpha4
+apiVersion: cluster.x-k8s.io/v1beta1
 kind: Cluster
 metadata:
   name: capi-quickstart
@@ -13,23 +13,23 @@ spec:
       cidrBlocks:
       - 10.128.0.0/12
   controlPlaneRef:
-    apiVersion: controlplane.cluster.x-k8s.io/v1alpha4
+    apiVersion: controlplane.cluster.x-k8s.io/v1beta1
     kind: KubeadmControlPlane
     name: capi-quickstart-control-plane
     namespace: default
   infrastructureRef:
-    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha4
+    apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
     kind: DockerCluster
     name: capi-quickstart
     namespace: default
 ---
-apiVersion: infrastructure.cluster.x-k8s.io/v1alpha4
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: DockerCluster
 metadata:
   name: capi-quickstart
   namespace: default
 ---
-apiVersion: infrastructure.cluster.x-k8s.io/v1alpha4
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: DockerMachineTemplate
 metadata:
   name: capi-quickstart-control-plane
@@ -41,7 +41,7 @@ spec:
       - containerPath: /var/run/docker.sock
         hostPath: /var/run/docker.sock
 ---
-apiVersion: controlplane.cluster.x-k8s.io/v1alpha4
+apiVersion: controlplane.cluster.x-k8s.io/v1beta1
 kind: KubeadmControlPlane
 metadata:
   name: capi-quickstart-control-plane
@@ -49,7 +49,6 @@ metadata:
 spec:
   kubeadmConfigSpec:
     clusterConfiguration:
-      imageRepository: registry.aliyuncs.com/google_containers
       apiServer:
         certSANs:
         - localhost
@@ -71,14 +70,14 @@ spec:
           eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
   machineTemplate:
     infrastructureRef:
-      apiVersion: infrastructure.cluster.x-k8s.io/v1alpha4
+      apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
       kind: DockerMachineTemplate
       name: capi-quickstart-control-plane
       namespace: default
   replicas: 1
-  version: v1.22.0
+  version: v1.22.2
 ---
-apiVersion: infrastructure.cluster.x-k8s.io/v1alpha4
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: DockerMachineTemplate
 metadata:
   name: capi-quickstart-md-0
@@ -87,7 +86,7 @@ spec:
   template:
     spec: {}
 ---
-apiVersion: bootstrap.cluster.x-k8s.io/v1alpha4
+apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
 kind: KubeadmConfigTemplate
 metadata:
   name: capi-quickstart-md-0
@@ -100,10 +99,8 @@ spec:
           kubeletExtraArgs:
             cgroup-driver: cgroupfs
             eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
-      clusterConfiguration:
-        imageRepository: registry.aliyuncs.com/google_containers
 ---
-apiVersion: cluster.x-k8s.io/v1alpha4
+apiVersion: cluster.x-k8s.io/v1beta1
 kind: MachineDeployment
 metadata:
   name: capi-quickstart-md-0
@@ -117,14 +114,14 @@ spec:
     spec:
       bootstrap:
         configRef:
-          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha4
+          apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
           kind: KubeadmConfigTemplate
           name: capi-quickstart-md-0
           namespace: default
       clusterName: capi-quickstart
       infrastructureRef:
-        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha4
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
         kind: DockerMachineTemplate
         name: capi-quickstart-md-0
         namespace: default
-      version: v1.22.0
+      version: v1.22.2
