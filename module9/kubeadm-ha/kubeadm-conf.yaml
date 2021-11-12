@@ -9,6 +9,18 @@ etcd:
   # one of local or external
   local:
     dataDir: "/var/lib/etcd"
+    serverCertSANs:
+      - "127.0.0.1"
+      - "192.168.34.2"
+      - "192.168.34.3"
+      - "localhost"
+      - "master.cncamp.io"
+    peerCertSANs:
+      - "127.0.0.1"
+      - "192.168.34.2"
+      - "192.168.34.3"
+      - "localhost"
+      - "master.cncamp.io"
 networking:
   podSubnet: "192.168.0.0/16"
   dnsDomain: "cluster.local"
