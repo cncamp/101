@@ -65,9 +65,55 @@ valid_lft forever preferred_lft forever
 ip r
 blackhole 192.168.119.64/26 proto 80
 ```
+### in multiple node env
+```
+ipamblock:
+10-233-90-0-24
+node1
+cidr: 10.233.90.0/24
+
+10.233.96.0/24 via 192.168.34.11 dev tunl0 proto bird onlink
+
+ipamblock:
+10-233-96-0-24
+node: node2
+cidr: 10.233.96.0/24
+10.233.90.0/24 via 192.168.34.10 dev tunl0 proto bird onlink
+```
+### check network mode
+```
+k get po -n calico-system calico-node-xk4kn -oyaml
+    - name: CALICO_NETWORKING_BACKEND
+      value: bird
+    name: calico-node
+    readinessProbe:
+      exec:
+        command:
+        - /bin/calico-node
+        - -bird-ready
+        - -felix-ready
+      failureThreshold: 3
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+```
+### check bird process running on the host
+```
+ps -ef|grep bird
+root        2433    2386  0 10:58 ?        00:00:00 runsv bird
+root        2435    2386  0 10:58 ?        00:00:00 runsv bird6
+root        2505    2469  0 10:58 ?        00:00:00 svlogd -ttt /var/log/calico/bird6
+root        2516    2510  0 10:58 ?        00:00:00 svlogd -ttt /var/log/calico/bird
+root        3662    2433  0 10:58 ?        00:00:00 bird -R -s /var/run/calico/bird.ctl -d -c /etc/calico/confd/config/bird.cfg
+root        3664    2435  0 10:58 ?        00:00:00 bird6 -R -s /var/run/calico/bird6.ctl -d -c /etc/calico/confd/config/bird6.cfg
+root        9167    5788  0 11:05 pts/0    00:00:00 grep --color=auto bird
+```
 ### check bird config
 ```
 k exec -it calico-node-7hmbt -n calico-system cat /etc/calico/confd/config/bird.cfg
+
+router id 192.168.34.2;
+
 protocol direct {
   debug { states };
   interface -"cali*", -"kube-ipvs*", "*"; # Exclude cali* and kube-ipvs* but
