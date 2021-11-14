@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  lables:
+  labels:
     app: readiness-gate
   name: readiness-gate
 spec:
