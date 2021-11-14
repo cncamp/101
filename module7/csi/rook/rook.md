@@ -1,44 +1,73 @@
-### resetup rook
-```
+### Resetup rook
+
+```sh
 rm -rf /var/lib/rook
 ```
-### add a new raw device
-create a raw disk from virtualbox console and attach to the vm(must > 5G)
-### clean env for next demo
-```
+
+### Add a new raw device
+
+Create a raw disk from virtualbox console and attach to the vm (must > 5G).
+
+### Clean env for next demo
+
+```sh
 delete ns rook-ceph
 for i in `kubectl api-resources | grep true | awk '{print \$1}'`; do echo $i;kubectl get $i -n rook-ceph; done
 ```
-### checkout rook
-```
+
+### Checkout rook
+
+```sh
 git clone --single-branch --branch master https://github.com/rook/rook.git
 cd rook/cluster/examples/kubernetes/ceph
 ```
-### create rook operator
-```
+
+### Create rook operator
+
+```sh
 kubectl create -f crds.yaml -f common.yaml -f operator.yaml
 ```
-### create ceph cluster
+
+### Create ceph cluster
+
+```sh
+kubectl get po -n rook-ceph
 ```
-kubectl get po -n rook-ceph, wait for all pod being running
+
+Wait for all pod to be running, and:
+
+```sh
 kubectl create -f cluster-test.yaml
 ```
-### create storage class
+
+### Create storage class
+
+```sh
+kubectl get po -n rook-ceph
 ```
-kubectl get po -n rook-ceph, wait for all pod being running
+
+Wait for all pod to be running, and:
+
+```sh
 kubectl create -f csi/rbd/storageclass-test.yaml
 ```
-### check configuration
-```
+
+### Check configuration
+
+```sh
 k get configmap -n rook-ceph rook-ceph-operator-config -oyaml
 ROOK_CSI_ENABLE_RBD: "true"
 ```
-### check csidriver
-```
+
+### Check csidriver
+
+```sh
 k get csidriver rook-ceph.rbd.csi.ceph.com
 ```
-### check csi plugin configuration
-```
+
+### Check csi plugin configuration
+
+```yaml
     name: csi-rbdplugin
     args:
     - --drivername=rook-ceph.rbd.csi.ceph.com
@@ -63,48 +92,69 @@ k get csidriver rook-ceph.rbd.csi.ceph.com
       path: /var/lib/kubelet/plugins/rook-ceph.rbd.csi.ceph.com
       type: DirectoryOrCreate
       name: plugin-dir
-```    
 ```
+
+```sh
 k get po csi-rbdplugin-j4s6c -n rook-ceph -oyaml
 /var/lib/kubelet/plugins/rook-ceph.rbd.csi.ceph.com
 ```
-### create toolbox when required
-```
+
+### Create toolbox when required
+
+```sh
 kubectl create -f cluster/examples/kubernetes/ceph/toolbox.yaml
 ```
-### test networkstorage
-```
+
+### Test networkstorage
+
+```sh
 kubectl create -f pvc.yaml
 kubectl create -f pod.yaml
 ```
-### enter pod and write some data
-```
+
+### Enter pod and write some data
+
+```sh
 kubeclt exec -it task-pv-pod sh
 cd /mnt/ceph
 echo hello world > hello.log
 ```
-### exit pod and delete the po
-```
+
+### Exit pod and delete the pod
+
+```sh
 kubectl create -f pod.yaml
 ```
-### recreate the pod and check /mnt/ceph again, and you will find the file is there
-```
+
+### Recreate the pod and check /mnt/ceph again, and you will find the file is there
+
+```sh
 kubectl delete -f pod.yaml
 kubectl create -f pod.yaml
 kubeclt exec -it task-pv-pod sh
 cd /mnt/ceph
 ls
 ```
-### expose dashboard
-```
+
+### Expose dashboard
+
+```sh
 kubectl get svc rook-ceph-mgr-dashboard -n rook-ceph -oyaml>svc1.yaml
-vi svc1.yaml, rename the svc and set service type as NodePort
+vi svc1.yaml
+```
+
+Rename the svc and set service type as NodePort:
+
+```sh
 k create -f svc1.yaml
 kubectl -n rook-ceph get secret rook-ceph-dashboard-password -o jsonpath="{['data']['password']}" | base64 --decode && echo
-login to the console with admin/<password>
 ```
-### clean up
-```
+
+Login to the console with `admin/<password>`.
+
+### Clean up
+
+```sh
 cd ~/go/src/github.com/rook/cluster/examples/kubernetes/ceph
 kubectl delete -f csi/rbd/storageclass-test.yaml
 kubectl delete -f cluster-test.yaml
