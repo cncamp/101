@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: no-sigterm
+spec:
+  terminationGracePeriodSeconds: 60
+  containers:
+    - name: no-sigterm
+      image: centos
+      command: ["/bin/sh"]
+      args: ["-c", "while true; do echo hello; sleep 10;done"]

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: liveness
+  name: liveness1
 spec:
   containers:
     - name: liveness
@@ -15,5 +15,5 @@ spec:
           command:
             - cat
             - /tmp/healthy
-        initialDelaySeconds: 30
+        initialDelaySeconds: 10
         periodSeconds: 5
