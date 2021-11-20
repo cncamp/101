@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: liveness
+  name: liveness1
 spec:
   containers:
     - name: liveness
@@ -10,10 +10,10 @@ spec:
         - /bin/sh
         - -c
         - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 600
-      readinessProbe:
+      livenessProbe:
         exec:
           command:
             - cat
             - /tmp/healthy
-        initialDelaySeconds: 30
+        initialDelaySeconds: 10
         periodSeconds: 5
