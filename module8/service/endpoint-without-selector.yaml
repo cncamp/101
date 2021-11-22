@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: service-without-selector
+subsets:
+  - addresses:
+      - ip: 220.181.38.148
+    ports:
+      - name: http
+        port: 80
+        protocol: TCP
