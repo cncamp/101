@@ -22,7 +22,7 @@ create a new project named test
 ### create webhook
 go http://192.168.34.2:30370/root/test
 browse settings->webhook
-enter http://el-gitlab-listener:8080, and click add webhook
+enter http://el-gitlab-listener:8080, and secret token as 1234567 and click add webhook
 ### test webhook
 Test->Push Event
 kubectl get po, you show see the taskrun pod
