@@ -22,35 +22,6 @@ type: Opaque
 data:
   token: changeme # in base64 encoded form
 ---
-apiVersion: tekton.dev/v1alpha1
-kind: PipelineResource
-metadata:
-  name: cncamp-test-image
-spec:
-  type: image
-  params:
-    - name: url
-      value: cncamp/test
----
-apiVersion: tekton.dev/v1alpha1
-kind: PipelineResource
-metadata:
-  name: test-cluster
-spec:
-  type: cluster
-  params:
-    - name: url
-      value: https://192.168.34.2:6443
-    - name: username
-      value: kubernetes-admin
-  secrets:
-    - fieldName: token
-      secretKey: tokenKey
-      secretName: target-cluster-secrets
-    - fieldName: cadata
-      secretKey: cadataKey
-      secretName: target-cluster-secrets
----
 apiVersion: v1
 kind: Secret
 metadata:
