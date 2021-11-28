@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: httpsserver
+spec:
+  hosts:
+    - httpserver
+  http:
+    - match:
+        - headers:
+            user:
+              exact: jesse
+      route:
+        - destination:
+            host: httpserver
+            subset: v2
+      ### retry if upstream server send 5xx
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+    - route:
+      - destination:
+          host: httpserver
+          subset: v1
+      ### send 500 to client in 80%
+      fault:
+        abort:
+          httpStatus: 500
+          percentage:
+            value: 80
