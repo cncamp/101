@@ -12,5 +12,8 @@ vboxmanage setextradata "localkube" "VBoxInternal/Devices/VMMDev/0/Config/GetHos
 ```
 cluster health
 6417
-Node resourc
+pod dashboard
+9729
+Istio Mesh
+7639
 ```

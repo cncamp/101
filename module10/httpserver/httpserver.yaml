@@ -18,6 +18,6 @@ spec:
       containers:
         - name: httpserver
           imagePullPolicy: Always
-          image: cncamp/httpserver:v1.0
+          image: cncamp/httpserver:v1.0-metrics
           ports:
           - containerPort: 80
