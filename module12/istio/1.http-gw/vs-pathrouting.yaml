@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: httpserver
+spec:
+  gateways:
+    - httpserver
+  hosts:
+    - httpserver.cncamp.io
+  http:
+    - match:
+        - port: 80
+      route:
+        - destination:
+            host: httpserver.httpserver.svc.cluster.local
+            port:
+              number: 80

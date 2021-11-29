@@ -95,3 +95,26 @@ kubeclt exec -it task-pv-pod sh
 cd /mnt/ceph
 ls
 ```
+### expose dashboard
+```
+kubectl get svc rook-ceph-mgr-dashboard -n rook-ceph -oyaml>svc1.yaml
+vi svc1.yaml, rename the svc and set service type as NodePort
+k create -f svc1.yaml
+kubectl -n rook-ceph get secret rook-ceph-dashboard-password -o jsonpath="{['data']['password']}" | base64 --decode && echo
+login to the console with admin/<password>
+```
+### clean up
+```
+cd ~/go/src/github.com/rook/cluster/examples/kubernetes/ceph
+kubectl delete -f csi/rbd/storageclass-test.yaml
+kubectl delete -f cluster-test.yaml
+kubectl delete -f crds.yaml -f common.yaml -f operator.yaml
+kubectl delete ns rook-ceph
+kubectl edit secret -n rook-ceph
+kubectl edit configmap -n rook-ceph
+kubectl edit cephclusters -n rook-ceph
+kubectl edit cephblockpools -n rook-ceph
+for i in `kubectl api-resources | grep true | awk '{print \$1}'`; do echo $i;kubectl get $i -n rook-ceph; done
+
+rm -rf /var/lib/rook
+```

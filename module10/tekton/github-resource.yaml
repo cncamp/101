@@ -1,0 +1,45 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: cncamp-golang
+spec:
+  type: git
+  params:
+    - name: url
+      value: https://github.com/cncamp/golang.git
+    - name: revision
+      value: master
+  secrets:
+    - fieldName: authToken
+      secretName: github-secrets
+      secretKey: token
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: github-secrets
+type: Opaque
+data:
+  token: changeme # in base64 encoded form
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: docker-auth
+type: Opaque
+stringData: 
+  config.json: |-
+    {
+      "auths": {
+        "https://index.docker.io/v1/": {
+          "auth": "changeme"
+        }
+      }
+    }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cncamp-sa
+secrets:
+- name: docker-auth

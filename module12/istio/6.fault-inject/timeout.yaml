@@ -1,0 +1,22 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: httpsserver
+spec:
+  hosts:
+    - httpserver
+  http:
+    - match:
+        - headers:
+            user:
+              exact: jesse
+      route:
+        - destination:
+            host: httpserver
+            subset: v2
+      ### if upstream server response delay is greater than 1s, send timeout error to client
+      timeout: 1s
+    - route:
+      - destination:
+          host: httpserver
+          subset: v1

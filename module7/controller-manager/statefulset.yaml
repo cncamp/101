@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nginx-ss
+spec:
+  serviceName: nginx-ss
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-ss
+  template:
+    metadata:
+      labels:
+        app: nginx-ss
+    spec:
+      containers:
+        - name: nginx-ss
+          image: nginx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ss
+  labels:
+    app: nginx-ss
+spec:
+  ports:
+    - port: 80
+  clusterIP: None
+  selector:
+    app: nginx-ss

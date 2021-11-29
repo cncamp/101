@@ -1,0 +1,47 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: github-build
+spec:
+  params:
+  - name: IMAGE
+    description: Name (reference) of the image to build.
+    default: cncamp/httpserver:v1.0
+  - name: DOCKERFILE
+    description: Path to the Dockerfile to build.
+    default: ./httpserver/Dockerfile
+  resources:
+    inputs:
+    - name: repo
+      type: git
+  steps:
+  - name: github-build
+    image: cncamp/executor
+    workingDir: /workspace/repo
+    args:
+    - "--dockerfile=./httpserver/Dockerfile"
+    - "--context=./httpserver"
+    - "--destination=cncamp/httpserver:v1.0"
+  workspaces:
+  - name: dockerconfig
+    description: Includes a docker `config.json`
+    optional: true
+    mountPath: /kaniko/.docker
+---
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: github-build
+spec:
+  serviceAccountName: cncamp-sa
+  taskRef:
+    name: github-build
+  resources:
+    inputs:
+    - name: repo
+      resourceRef:
+        name: cncamp-golang
+  workspaces:
+  - name: dockerconfig
+    secret:
+      secretName: docker-auth

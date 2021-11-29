@@ -1,0 +1,180 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cncamp-gitlab-sa
+---
+apiVersion: v1 
+kind: Secret 
+metadata: 
+  name: cncamp-gitlab-secret 
+type: Opaque 
+stringData:
+### this secret token is to protect the webhook service
+### when creating git lab webhook, this token need to be specified
+  secretToken: '1234567' 
+--- 
+apiVersion: v1 
+kind: Secret 
+metadata: 
+  name: cncamp-gitlab-auth
+  annotations: 
+    tekton.dev/git-1: http://gitlab.default.svc.cluster.local
+type: kubernetes.io/basic-auth
+### this is the user/password for gitlab when checkout code
+stringData: 
+  username: root
+  password: UNrTcQ+CfewcLlBu/PH86WTMzoVWj+1WWi3L8nb/jsE=
+---
+apiVersion: triggers.tekton.dev/v1alpha1 
+kind: EventListener 
+metadata: 
+  name: gitlab-listener
+spec: 
+  serviceAccountName: cncamp-gitlab-sa
+  triggers: 
+  - name: gitlab-push-events-trigger 
+    interceptors: 
+    - ref: 
+        name: gitlab 
+      params: 
+      - name: secretRef
+        value: 
+          secretName: cncamp-gitlab-secret 
+          secretKey: secretToken 
+      - name: eventTypes 
+        value: 
+          - Push Hook
+    bindings: 
+    - ref: gitlab-binding 
+    template: 
+      ref: gitlab-triggertemplate
+---
+apiVersion: triggers.tekton.dev/v1alpha1 
+kind: TriggerBinding 
+metadata: 
+  name: gitlab-binding
+spec: 
+  params: 
+    - name: gitrevision 
+      value: $(body.checkout_sha) 
+    - name: gitrepositoryurl 
+      value: http://gitlab/root/test.git
+---
+apiVersion: triggers.tekton.dev/v1alpha1 
+kind: TriggerTemplate 
+metadata: 
+  name: gitlab-triggertemplate 
+spec:
+  params:
+  - name: gitrevision
+  - name: gitrepositoryurl
+  resourcetemplates:
+    - kind: PipelineRun
+      apiVersion: tekton.dev/v1beta1
+      metadata:
+        generateName: gitlab-pipeline-run-
+      spec: 
+        serviceAccountName: cncamp-gitlab-sa
+        pipelineSpec:
+          tasks:
+          - name: checkout
+            taskRef:
+              name: gitlab-checkout
+            resources:
+              inputs:
+              - name: source
+                resource: source
+          resources:
+          - name: source
+            type: git
+        resources:
+        - name: source
+          resourceSpec:
+            type: git
+            params:
+            - name: revision
+              value: $(tt.params.gitrevision)
+            - name: url
+              value: $(tt.params.gitrepositoryurl)
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: gitlab-checkout
+spec:
+  resources:
+    inputs:
+      - name: source
+        type: git
+  steps:
+    - name: show-path
+      image: ubuntu
+      script: |
+        #! /bin/bash
+        cat /etc/resolv.conf
+        ls -la $(resources.inputs.source.path)
+---
+apiVersion: v1 
+kind: ServiceAccount 
+metadata: 
+  name: cncamp-gitlab-sa
+secrets: 
+  - name: cncamp-gitlab-secret
+  - name: cncamp-gitlab-auth
+--- 
+apiVersion: rbac.authorization.k8s.io/v1 
+kind: Role 
+metadata: 
+  name: tekton-triggers-gitlab-minimal 
+rules: 
+  - apiGroups: ['triggers.tekton.dev'] 
+    resources: 
+      ['eventlisteners', 'triggerbindings', 'triggertemplates', 'triggers'] 
+    verbs: ['get', 'list', 'watch'] 
+  - apiGroups: [''] 
+    resources: ['configmaps'] 
+    verbs: ['get', 'list', 'watch'] 
+  - apiGroups: ['tekton.dev'] 
+    resources: ['pipelineruns', 'pipelineresources', 'taskruns'] 
+    verbs: ['create'] 
+  - apiGroups: [''] 
+    resources: ['serviceaccounts'] 
+    verbs: ['impersonate'] 
+  - apiGroups: ['policy'] 
+    resources: ['podsecuritypolicies'] 
+    resourceNames: ['tekton-triggers'] 
+    verbs: ['use'] 
+--- 
+apiVersion: rbac.authorization.k8s.io/v1 
+kind: RoleBinding 
+metadata: 
+  name: tekton-triggers-gitlab-binding 
+subjects: 
+  - kind: ServiceAccount 
+    name: cncamp-gitlab-sa 
+roleRef: 
+  apiGroup: rbac.authorization.k8s.io 
+  kind: Role 
+  name: tekton-triggers-gitlab-minimal 
+--- 
+kind: ClusterRole 
+apiVersion: rbac.authorization.k8s.io/v1 
+metadata: 
+  name: tekton-triggers-gitlab-clusterrole 
+rules: 
+  - apiGroups: ['triggers.tekton.dev'] 
+    resources: ['clustertriggerbindings', 'clusterinterceptors'] 
+    verbs: ['get', 'list', 'watch'] 
+--- 
+apiVersion: rbac.authorization.k8s.io/v1 
+kind: ClusterRoleBinding 
+metadata: 
+  name: tekton-triggers-gitlab-clusterbinding 
+subjects: 
+  - kind: ServiceAccount 
+    name: cncamp-gitlab-sa 
+    namespace: default 
+roleRef: 
+  apiGroup: rbac.authorization.k8s.io 
+  kind: ClusterRole 
+  name: tekton-triggers-gitlab-clusterrole 
