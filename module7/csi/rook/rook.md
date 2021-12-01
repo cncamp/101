@@ -110,10 +110,26 @@ kubectl delete -f csi/rbd/storageclass-test.yaml
 kubectl delete -f cluster-test.yaml
 kubectl delete -f crds.yaml -f common.yaml -f operator.yaml
 kubectl delete ns rook-ceph
+```
+### clean up
+### 编辑下面四个文件，将finalizer的值修改为null
+### 例如
+```
+finalizers:
+    - ceph.rook.io/disaster-protection/
+```
+### 修改为
+```
+finalizers：null
+```
+```
 kubectl edit secret -n rook-ceph
 kubectl edit configmap -n rook-ceph
 kubectl edit cephclusters -n rook-ceph
 kubectl edit cephblockpools -n rook-ceph
+```
+### 执行下面循环，直至找不到任何rook关联对象。
+```
 for i in `kubectl api-resources | grep true | awk '{print \$1}'`; do echo $i;kubectl get $i -n rook-ceph; done
 
 rm -rf /var/lib/rook
