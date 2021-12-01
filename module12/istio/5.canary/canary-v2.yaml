@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: httpserver-v2
+  name: canary-v2
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: httpserver
+      app: canary
   template:
     metadata:
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "80"
       labels:
-        app: httpserver
+        app: canary
         version: v2
     spec:
       containers:
-        - name: httpserver
+        - name: canary
           imagePullPolicy: Always
           image: cncamp/httpserver:v2.0-metrics
           ports:

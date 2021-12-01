@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: httpserver
+  name: simple
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: httpserver
+      app: simple
   template:
     metadata:
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "80"
       labels:
-        app: httpserver
+        app: simple
     spec:
       containers:
-        - name: httpserver
+        - name: simple
           imagePullPolicy: Always
           image: cncamp/httpserver:v1.0-metrics
           ports:
@@ -25,7 +25,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: httpserver
+  name: simple
 spec:
   ports:
     - name: http
@@ -33,4 +33,4 @@ spec:
       protocol: TCP
       targetPort: 80
   selector:
-    app: httpserver
+    app: simple
