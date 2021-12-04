@@ -1,6 +1,7 @@
-```
+```sh
 ks exec -it kube-controller-manager-cadmin -- kube-controller-manager -h
 ```
+
 ```
 Nodelifecycle controller flags:
 

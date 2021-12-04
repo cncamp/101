@@ -2,15 +2,13 @@
 
 ### Core
 
-- [namespace](namespace.MD)
-
-- cgroup
-  - [cpu](cgroup-cpu.MD)
-  - [memory](cgroup-mem.MD)
-  - [filesystem](overlay-fs.MD)
-  - [network](setup-network.md)
-
-- [understand docker](2.understand-docker.md)
+- [Namespace](namespace.MD)
+- cgroups
+  - [CPU](cgroup-cpu.MD)
+  - [Memory](cgroup-mem.MD)
+- [Filesystem](overlay-fs.MD)
+- [Network](setup-network.md)
+- [Understand docker](2.understand-docker.md)
 
 ### Some Tips
 

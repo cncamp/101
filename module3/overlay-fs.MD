@@ -10,7 +10,9 @@ $ echo "from upper" > upper/in_upper.txt
 $ echo "from lower" > lower/in_both.txt
 $ echo "from upper" > upper/in_both.txt
 ```
+
 ### Check it
+
 ```log
 root@k8s-master:~/testlab# tree .
 .
@@ -33,6 +35,7 @@ $ sudo mount -t overlay overlay -o lowerdir=`pwd`/lower,upperdir=`pwd`/upper,wor
 ```
 
 ### Check the merged file
+
 ```shell
 $ cat merged/in_both.txt
 

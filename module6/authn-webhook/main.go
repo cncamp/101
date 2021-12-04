@@ -28,12 +28,12 @@ func main() {
 			})
 			return
 		}
-		log.Printf("receving request", tr)
+		log.Print("receving request")
 		// Check User
 		ts := oauth2.StaticTokenSource(
 			&oauth2.Token{AccessToken: tr.Spec.Token},
 		)
-		tc := oauth2.NewClient(oauth2.NoContext, ts)
+		tc := oauth2.NewClient(context.Background(), ts)
 		client := github.NewClient(tc)
 		user, _, err := client.Users.Get(context.Background(), "")
 		if err != nil {

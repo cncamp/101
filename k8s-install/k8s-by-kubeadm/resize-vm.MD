@@ -1,26 +1,33 @@
 ### fdisk
-```
+
+```sh
 fdisk /dev/sda
 p - partition
 n - new
 ```
-### create new pv
-```
-### pvcreate /dev/sda4
-```
-```
+
+### Create new pv
+
+```sh
+pvcreate /dev/sda4
 vgdisplay
 ```
-### add new pv to vg
-```
+
+### Add new pv to vg
+
+```sh
 vgextend ubuntu-vg /dev/sda4
 ```
-### check rootfs lv path
-```
+
+### Check rootfs lv path
+
+```sh
 vgdisplay
 lvdisplay
 ```
-### resize root fix
-```
+
+### Resize root fix
+
+```sh
 lvextend --size +19.99G --resizefs /dev/ubuntu-vg/ubuntu-lv
 ```

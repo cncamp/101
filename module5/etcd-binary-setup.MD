@@ -1,10 +1,13 @@
 ### 创建工作目录
-```
-mkdir -p /data/k8s-work 
+
+```sh
+mkdir -p /data/k8s-work
 cd /data/k8s-work
 ```
-### 下载cfssl工具
-```
+
+### 下载 cfssl 工具
+
+```sh
 wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
 wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
 wget https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
@@ -14,8 +17,10 @@ mv cfssl_linux-amd64 /usr/local/bin/cfssl
 mv cfssljson_linux-amd64 /usr/local/bin/cfssljson
 mv cfssl-certinfo_linux-amd64 /usr/local/bin/cfssl-certinfo
 ```
-### 生成ca配置文件
-```
+
+### 生成 ca 配置文件
+
+```sh
 cat > ca-csr.json <<"EOF"
 {
 "CN": "kubernetes",
@@ -38,12 +43,16 @@ cat > ca-csr.json <<"EOF"
 }
 EOF
 ```
-### 生成ca证书文件
-```
+
+### 生成 ca 证书文件
+
+```sh
 cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 ```
-### 配置ca证书策略
-```
+
+### 配置 ca 证书策略
+
+```sh
 cat > ca-config.json <<"EOF"
 {
   "signing": {
@@ -65,8 +74,10 @@ cat > ca-config.json <<"EOF"
 }
 EOF
 ```
-### 配置etcd请求csr文件
-```
+
+### 配置 etcd 请求 csr 文件
+
+```sh
 cat > etcd-csr.json <<"EOF"
 {
   "CN": "etcd",
@@ -88,17 +99,22 @@ cat > etcd-csr.json <<"EOF"
 }
 EOF
 ```
+
 ### 生成证书
-```
+
+```sh
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes etcd-csr.json | cfssljson  -bare etcd
 ```
-```
+
+```sh
 wget https://github.com/etcd-io/etcd/releases/download/v3.5.0/etcd-v3.5.0-linux-amd64.tar.gz
 tar -xvf etcd-v3.5.0-linux-amd64.tar.gz
 cp -p etcd-v3.5.0-linux-amd64/etcd* /usr/local/bin/
 ```
-### 生成etcd配置文件
-```
+
+### 生成 etcd 配置文件
+
+```sh
 cat >  etcd.conf <<"EOF"
 #[Member]
 ETCD_NAME="etcd1"
@@ -115,5 +131,6 @@ ETCD_INITIAL_CLUSTER_STATE="new"
 EOF
 ```
 
-### reference 
+### Reference
+
 https://www.jianshu.com/p/b02c428950df

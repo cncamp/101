@@ -1,10 +1,13 @@
-### enter centos pod
+### Enter centos pod
+
+```shell
+$ k exec -it centos-5fdd4bb694-7cgc8 bash
 ```
-k exec -it centos-5fdd4bb694-7cgc8 bash
-```
-### check ip and route
-```
-ip a
+
+### Check ip and route
+
+```shell
+$ ip a
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
     inet 127.0.0.1/8 scope host lo
@@ -14,29 +17,36 @@ ip a
     inet 192.168.119.78/32 brd 192.168.119.78 scope global eth0
        valid_lft forever preferred_lft forever
 
-ip r
+$ ip r
 default via 169.254.1.1 dev eth0
 169.254.1.1 dev eth0 scope link
 ```
-### check who is 169.254.1.1
-```
-arping 169.254.1.1
+
+### Check who is 169.254.1.1
+
+```shell
+$ arping 169.254.1.1
 ARPING 169.254.1.1 from 192.168.119.78 eth0
 Unicast reply from 169.254.1.1 [EE:EE:EE:EE:EE:EE]  0.579ms
 Unicast reply from 169.254.1.1 [EE:EE:EE:EE:EE:EE]  0.536ms
 ```
-### tcp dump on one device and test ping
-### exit container and check ip a
-```
-ip a
+
+### tcpdump on one device and test ping
+
+### Exit container and check ip a
+
+```shell
+$ ip a
 45: calie3f1daf7d15@if3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UP group default
     link/ether ee:ee:ee:ee:ee:ee brd ff:ff:ff:ff:ff:ff link-netnsid 11
     inet6 fe80::ecee:eeff:feee:eeee/64 scope link
        valid_lft forever preferred_lft forever
 ```
-### check ip pool config
-```
-k get ippool -oyaml default-ipv4-ippool
+
+### Check ip pool config
+
+```shell
+$ k get ippool -oyaml default-ipv4-ippool
 apiVersion: projectcalico.org/v3
 kind: IPPool
 metadata:
@@ -50,9 +60,10 @@ spec:
   vxlanMode: CrossSubnet
 ```
 
-### check ip address
-```
-ip a
+### Check ip address
+
+```shell
+$ ip a
 9: vxlan.calico: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UNKNOWN group default
 link/ether 66:4e:21:17:59:aa brd ff:ff:ff:ff:ff:ff
 inet 192.168.119.64/32 scope global vxlan.calico
@@ -60,13 +71,17 @@ valid_lft forever preferred_lft forever
 inet6 fe80::644e:21ff:fe17:59aa/64 scope link
 valid_lft forever preferred_lft forever
 ```
-### check ip route
-```
-ip r
+
+### Check ip route
+
+```shell
+$ ip r
 blackhole 192.168.119.64/26 proto 80
 ```
-### in multiple node env
-```
+
+### In multiple node env
+
+```sh
 ipamblock:
 10-233-90-0-24
 node1
@@ -80,9 +95,11 @@ node: node2
 cidr: 10.233.96.0/24
 10.233.90.0/24 via 192.168.34.10 dev tunl0 proto bird onlink
 ```
-### check network mode
-```
-k get po -n calico-system calico-node-xk4kn -oyaml
+
+### Check network mode
+
+```shell
+$ k get po -n calico-system calico-node-xk4kn -oyaml
     - name: CALICO_NETWORKING_BACKEND
       value: bird
     name: calico-node
@@ -97,9 +114,11 @@ k get po -n calico-system calico-node-xk4kn -oyaml
       successThreshold: 1
       timeoutSeconds: 5
 ```
-### check bird process running on the host
-```
-ps -ef|grep bird
+
+### Check bird process running on the host
+
+```shell
+$ ps -ef|grep bird
 root        2433    2386  0 10:58 ?        00:00:00 runsv bird
 root        2435    2386  0 10:58 ?        00:00:00 runsv bird6
 root        2505    2469  0 10:58 ?        00:00:00 svlogd -ttt /var/log/calico/bird6
@@ -108,9 +127,11 @@ root        3662    2433  0 10:58 ?        00:00:00 bird -R -s /var/run/calico/b
 root        3664    2435  0 10:58 ?        00:00:00 bird6 -R -s /var/run/calico/bird6.ctl -d -c /etc/calico/confd/config/bird6.cfg
 root        9167    5788  0 11:05 pts/0    00:00:00 grep --color=auto bird
 ```
-### check bird config
-```
-k exec -it calico-node-7hmbt -n calico-system cat /etc/calico/confd/config/bird.cfg
+
+### Check bird config
+
+```shell
+$ k exec -it calico-node-7hmbt -n calico-system cat /etc/calico/confd/config/bird.cfg
 
 router id 192.168.34.2;
 
@@ -127,8 +148,9 @@ protocol direct {
                                           # export cluster IPs.
 }
 ```
+
 ### iptables-save, masq all traffic to outside
-```
+
+```sh
 -A cali-nat-outgoing -m comment --comment "cali:flqWnvo8yq4ULQLa" -m set --match-set cali40masq-ipam-pools src -m set ! --match-set cali40all-ipam-pools dst -j MASQUERADE --random-fully
 ```
-

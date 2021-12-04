@@ -13,8 +13,8 @@ docker.io/library/busybox  latest      42b97d3c2ae9  13 days ago   1.46 MB
 gcr.io/distroless/static   latest      e0851a4aa136  51 years ago  3.06 MB
 ```
 
-- busybox 
-- alpine 
+- busybox
+- alpine
 - google/distroless
 
 Example:
@@ -61,6 +61,7 @@ ADD https://example.com/big.tar.xz /usr/src/things/
 RUN tar -xJf /usr/src/things/big.tar.xz -C /usr/src/things
 RUN make -C /usr/src/things all
 ```
+
 instead of
 
 ```dockerfile
@@ -90,4 +91,3 @@ RUN apt-get update && apt-get install -y \
 https://github.com/docker-library/buildpack-deps/blob/master/Dockerfile.template
 
 https://www.digitalocean.com/community/tutorials/how-to-optimize-docker-images-for-production
-
