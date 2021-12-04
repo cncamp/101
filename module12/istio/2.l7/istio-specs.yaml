@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: simple
+spec:
+  gateways:
+    - simple
+  hosts:
+    - simple.cncamp.io
+  http:
+  - match:
+    - uri:
+        exact: "/simple/hello"
+    rewrite:
+      uri: "/hello"
+    route:
+      - destination:
+          host: simple.simple.svc.cluster.local
+          port:
+            number: 80
+  - match:
+    - uri:
+        prefix: "/nginx"
+    rewrite:
+      uri: "/"
+    route:
+      - destination:
+          host: nginx.simple.svc.cluster.local
+          port:
+            number: 80

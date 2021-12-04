@@ -8,7 +8,9 @@ kind: Secret
 metadata: 
   name: cncamp-gitlab-secret 
 type: Opaque 
-stringData: 
+stringData:
+### this secret token is to protect the webhook service
+### when creating git lab webhook, this token need to be specified
   secretToken: '1234567' 
 --- 
 apiVersion: v1 
@@ -17,10 +19,11 @@ metadata:
   name: cncamp-gitlab-auth
   annotations: 
     tekton.dev/git-1: http://gitlab.default.svc.cluster.local
-type: kubernetes.io/basic-auth 
+type: kubernetes.io/basic-auth
+### this is the user/password for gitlab when checkout code
 stringData: 
   username: root
-  password: lzKyburULL0j4qnumSNI2fZycQCMkw8Is5t6D5iy790= 
+  password: UNrTcQ+CfewcLlBu/PH86WTMzoVWj+1WWi3L8nb/jsE=
 ---
 apiVersion: triggers.tekton.dev/v1alpha1 
 kind: EventListener 

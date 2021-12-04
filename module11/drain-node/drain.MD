@@ -4,6 +4,7 @@ kubectl drain cadmin
 ```
 ### make a node scheduable again
 ```
+kubectl cordon
 kubectl uncordon
 ```
 

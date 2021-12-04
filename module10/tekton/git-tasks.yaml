@@ -15,7 +15,7 @@ spec:
     - name: repo
       type: git
   steps:
-  - name: gthub-build
+  - name: github-build
     image: cncamp/executor
     workingDir: /workspace/repo
     args:

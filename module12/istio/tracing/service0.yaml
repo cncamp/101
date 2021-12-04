@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service0
+  template:
+    metadata:
+      labels:
+        app: service0
+    spec:
+      containers:
+        - name: service0
+          imagePullPolicy: Always
+          image: cncamp/service0:v1.0
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service0
+spec:
+  ports:
+    - name: http-service0
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: service0

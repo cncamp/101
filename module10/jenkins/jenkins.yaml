@@ -38,4 +38,4 @@ spec:
     - name: agent
       port: 50000
       protocol: TCP
-  type: LoadBalancer
+  type: NodePort

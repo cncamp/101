@@ -20,4 +20,17 @@ spec:
           imagePullPolicy: Always
           image: cncamp/httpserver:v1.0-metrics
           ports:
-          - containerPort: 80
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpserver
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: httpserver

@@ -7,14 +7,14 @@ kubectl create ns harbor
 ### update values.yaml
 ```
 vi .harbor/values.yaml and change
-persistence: false
+
 
 expose:
   type: nodePort
 tls:
-  enabled: false
+  commonName: "core.harbor.domain"
 
-externalURL: http://core.harbor.domain
+persistence: false
 ```
 ### install helm chart
 ```
@@ -45,13 +45,12 @@ admin/Harbor12345
 ```
 ### docker login
 ```
-docker login core.harbor.domain:32177
-harbor_registry_user/harbor_registry_password
+docker login -u harbor_registry_user -p harbor_registry_password core.harbor.domain:32083
 ```
 ### check repositories and blobs
 ```
 kubectl exec -it harbor-registry-7d686859d7-xs5nv -n harbor bash
-ls la /storage/docker/registry/v2/repositories/
+ls -la /storage/docker/registry/v2/repositories/
 ls -la /storage/docker/registry/v2/blobs
 ```
 ### db operator
