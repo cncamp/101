@@ -1,3 +1,6 @@
 ```
-kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10
+kubectl create -f php-apache.yaml
+kubectl create -f hpav2.yaml
+kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
+watch kubectl top pods
 ```
