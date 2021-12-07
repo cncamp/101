@@ -17,7 +17,7 @@ kubectl apply -f vpa.yaml
 ```
 1. get all pods-> 
 2. get live pods-> 
-3. get pods managed by vpa-> 
+3. get pods managed by vpa && evictable -> 
 4. add to updater queue-> 
 5. if (within recommend range && no oom) || (oom but resourcediff==0) -->no update
 else pods enqueue with priority-> 
