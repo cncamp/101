@@ -1,10 +1,10 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: httpsserver
+  name: canary
 spec:
   hosts:
-    - httpserver
+    - canary
   http:
     - match:
         - headers:
@@ -12,7 +12,7 @@ spec:
               exact: jesse
       route:
         - destination:
-            host: httpserver
+            host: canary
             subset: v2
       ### retry if upstream server send 5xx
       retries:
@@ -20,7 +20,7 @@ spec:
         perTryTimeout: 2s
     - route:
       - destination:
-          host: httpserver
+          host: canary
           subset: v1
       ### send 500 to client in 80%
       fault:

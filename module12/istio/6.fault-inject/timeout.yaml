@@ -1,10 +1,10 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: httpsserver
+  name: canary
 spec:
   hosts:
-    - httpserver
+    - canary
   http:
     - match:
         - headers:
@@ -12,11 +12,11 @@ spec:
               exact: jesse
       route:
         - destination:
-            host: httpserver
+            host: canary
             subset: v2
       ### if upstream server response delay is greater than 1s, send timeout error to client
       timeout: 1s
     - route:
       - destination:
-          host: httpserver
+          host: canary
           subset: v1
