@@ -9,13 +9,13 @@ kubectl uncordon
 ```
 
 ```
-curl -v -H 'Content-type: application/json' --key client.key --cert client.crt https://192.168.34.2:6443/api/v1/namespaces/default/pods/httpserver-5b5fc75b98-rc2kf/eviction -d @eviction.json
+curl -v -H 'Content-type: application/json' --key client.key --cert client.crt https://192.168.34.2:6443/api/v1/namespaces/default/pods/nginx-deployment-6799fc88d8-ds499/eviction -d @eviction.json
 
 {
   "apiVersion": "policy/v1",
   "kind": "Eviction",
   "metadata": {
-    "name": "httpserver-5b5fc75b98-rc2kf",
+    "name": "nginx-deployment-6799fc88d8-ds499",
     "namespace": "default"
   }
 }

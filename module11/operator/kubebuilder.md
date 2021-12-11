@@ -10,28 +10,27 @@ domain: cncamp.io
 layout:
 - go.kubebuilder.io/v3
 projectName: mysts
-repo: github.com/cncamp/mysts
+repo: github.com/cncamp/demo-operator
 version: "3"
 ```
 ### create API, create resource[Y], create controller[Y]
 ```
-kubebuilder create api --group apps --version v1alpha1 --kind SimpleStatefulset
+kubebuilder create api --group apps --version v1beta1 --kind MyDaemonset
 ```
 ### open project by IDE and edit api/v1alpha1/simplestatefulset_types.go
 ```
-// SimpleStatefulsetSpec defines the desired state of SimpleStatefulset
-type SimpleStatefulsetSpec struct {
+// MyDaemonsetSpec defines the desired state of MyDaemonset
+type MyDaemonsetSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of SimpleStatefulset. Edit simplestatefulset_types.go to remove/update
+	// Foo is an example field of MyDaemonset. Edit mydaemonset_types.go to remove/update
 	Image string `json:"image,omitempty"`
-	Replicas int32 `json:"replicas,omitempty"`
 }
 
-// SimpleStatefulsetStatus defines the observed state of SimpleStatefulset
-type SimpleStatefulsetStatus struct {
-	AvailableReplicas string `json:"availableReplicas,omitempty"`
+// MyDaemonsetStatus defines the observed state of MyDaemonset
+type MyDaemonsetStatus struct {
+	AvaiableReplicas int `json:"avaiableReplicas,omitempty"`
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 }
@@ -71,7 +70,7 @@ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.6
 ```
 ### create webhooks
 ```
-kubebuilder create webhook --group apps --version v1alpha1 --kind SimpleStatefulset --defaulting --programmatic-validation
+kubebuilder create webhook --group apps --version v1beta1 --kind MyDaemonset --defaulting --programmatic-validation
 ```
 ### change code
 ### enable webhook in
