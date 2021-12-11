@@ -6,7 +6,7 @@ spec:
   targetKind: FederatedDeployment
   totalReplicas: 3
   clusters: 
-    cluster1:
+    kind-kind:
       minReplicas: 1
       maxReplicas: 1
       weight: 1

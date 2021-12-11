@@ -22,4 +22,4 @@ spec:
             name: nginx
   placement:
     clusters:
-    - name: cluster1
+    - name: kind-kind
