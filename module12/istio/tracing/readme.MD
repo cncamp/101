@@ -14,7 +14,7 @@ kubectl create -f istio-specs.yaml -n istiodemo
 ### check ingress ip
 ```
 k get svc -nistio-system
-istio-ingressgateway   LoadBalancer   10.105.227.152
+istio-ingressgateway   LoadBalancer   $INGRESS_IP
 ```
 ### access the istiodemo via ingress for 100 times(sampling rate is 1%)
 ```
