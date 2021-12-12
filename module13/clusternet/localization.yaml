@@ -1,0 +1,36 @@
+apiVersion: apps.clusternet.io/v1alpha1
+kind: Localization
+metadata:
+  name: nginx-local-overrides-demo-higher-priority
+  namespace: clusternet-xwzlg
+spec:
+  # Priority is an integer defining the relative importance of this Localization compared to others.
+  # Lower numbers are considered lower priority.
+  # Override values in lower Localization will be overridden by those in higher Localization.
+  # (Optional) Default priority is 500.
+  priority: 600
+  feed:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: my-nginx
+    namespace: foo
+  overrides: # defines all the overrides to be processed with
+    - name: scale-and-add-annotations
+      type: JSONPatch
+      # Value is a YAML/JSON format patch that provides JSONPatch to current resource defined by feed.
+      # This patch sets replicas to 3 and adds a new annotation "foo=bar".
+      value: |-
+        [
+          {
+            "path": "/spec/replicas",
+            "value": 3,
+            "op": "replace"
+          },
+          {
+            "path": "/metadata/annotations",
+            "value": {
+              "foo":"bar"
+            },
+            "op": "add"
+          }
+        ]
