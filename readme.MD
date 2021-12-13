@@ -11,6 +11,7 @@
 |     8     | Kubernetes Control Plane Component: Lifecycle Management and Service Discovery |     [module8](module8)     |
 |     9     |                 Managing Production-ready Kubernetes Clusters                  |     [module9](module9)     |
 |    10     |                      DevOps with Kubernetes in Production                      |    [module10](module10)    |
+|    11     |                          Migrating apps to Kubernetes                          |    [module11](module11)    |
 
 ## Microservice
 
