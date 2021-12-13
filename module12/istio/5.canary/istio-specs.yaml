@@ -1,10 +1,10 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: httpsserver
+  name: canary
 spec:
   hosts:
-    - httpserver
+    - canary
   http:
     - match:
         - headers:
@@ -12,19 +12,19 @@ spec:
               exact: jesse
       route:
         - destination:
-            host: httpserver
+            host: canary
             subset: v2
     - route:
       - destination:
-          host: httpserver
+          host: canary
           subset: v1
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: httpserver
+  name: canary
 spec:
-  host: httpserver
+  host: canary
   trafficPolicy:
     loadBalancer:
       simple: RANDOM

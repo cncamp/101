@@ -18,15 +18,7 @@ spec:
         - name: toolbox
           image: centos
           command:
-          - tail
-          - -f
-          - /dev/null
----
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: default-deny
-  namespace: ns-calico-01
-spec:
-  podSelector: {}
+            - tail
+            - -f
+            - /dev/null
 ---

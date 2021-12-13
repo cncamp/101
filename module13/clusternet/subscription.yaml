@@ -1,0 +1,18 @@
+apiVersion: apps.clusternet.io/v1alpha1
+kind: Subscription
+metadata:
+  name: app-demo
+  namespace: default
+spec:
+  subscribers: # defines the clusters to be distributed to
+    - clusterAffinity:
+        matchLabels:
+          clusters.clusternet.io/cluster-id: 7983d3f1-cb55-427b-855c-95cc03bf6170
+  feeds:
+    - apiVersion: v1
+      kind: Namespace
+      name: foo
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: my-nginx
+      namespace: foo

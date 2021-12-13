@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: calico-demo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: calico-demo
+  name: calico-demo
+  labels:
+    app: calico-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: calico-demo
+  template:
+    metadata:
+      labels:
+        app: calico-demo
+        access: "true"
+    spec:
+      containers:
+        - name: calico-demo
+          image: nginx
+          ports:
+            - containerPort: 80

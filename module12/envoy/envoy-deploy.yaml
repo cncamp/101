@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: envoy
+  name: envoy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: envoy
+  template:
+    metadata:
+      labels:
+        run: envoy
+    spec:
+      containers:
+        - image: envoyproxy/envoy-dev
+          name: envoy
+          volumeMounts:
+            - name: envoy-config
+              mountPath: "/etc/envoy"
+              readOnly: true
+      volumes:
+        - name: envoy-config
+          configMap:
+            name: envoy-config

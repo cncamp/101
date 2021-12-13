@@ -8,10 +8,11 @@ kubectl create -f istio-specs.yaml -n simple
 ### check ingress ip
 ```
 k get svc -nistio-system
-istio-ingressgateway   LoadBalancer   10.105.227.152
+istio-ingressgateway   LoadBalancer   10.108.31.242
 ```
 
 ### access the simple via ingress
+export INGRESS_IP=10.108.31.242
 ```
-curl -H "Host: simple.cncamp.io" 10.105.227.152/hello -v
+curl -H "Host: simple.cncamp.io" $INGRESS_IP/hello -v
 ```
