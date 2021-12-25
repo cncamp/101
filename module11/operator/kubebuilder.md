@@ -61,6 +61,14 @@ Build targets:
     deploy: Deploy controller to the K8s cluster specified in ~/.kube/config.
 ```
 
+### Edit `controllers/mydaemonset_controller.go`, add permissions to the controller
+```go
+//+kubebuilder:rbac:groups=apps.cncamp.io,resources=mydaemonsets/finalizers,verbs=update
+// Add the following
+//+kubebuilder:rbac:groups=core,resources=nodes,verbs=get;list;watch
+//+kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;watch;create;update;patch;delete
+```
+
 ### Generate crd
 
 ```sh

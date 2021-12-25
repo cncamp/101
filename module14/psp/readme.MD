@@ -3,12 +3,15 @@
 kubectl create namespace psp-example
 kubectl create serviceaccount -n psp-example fake-user
 kubectl create rolebinding -n psp-example fake-editor --clusterrole=edit --serviceaccount=psp-example:fake-user
+```
+### create alias to simulate users
+```
 alias kubectl-admin='kubectl -n psp-example'
 alias kubectl-user='kubectl --as=system:serviceaccount:psp-example:fake-user -n psp-example'
 ```
 ### create psp
 ```
-kubectl-admin create -f example-psp.yaml
+kubectl-admin apply -f example-psp.yaml
 ```
 ### try pod creation will fail as the psp admit is not passed
 ```

@@ -1,3 +1,4 @@
+## install kubefed by kind
 ### 下载federation代码
 ```
 git clone https://github.com/kubernetes-sigs/kubefed.git
@@ -18,13 +19,17 @@ current-context: `cluster1`
 ```
 kind create cluster
 make deploy.kind
-kubectl -n kube-federation-system get kubefedcluster
+kubectl -n kube-federation-system get kubefedcluster -oyaml
 ```
 ### fix
 ```
-k get po -n kube-system kube-apiserver-kind-control-plane 
+k get po -n kube-system kube-apiserver-kind-control-plane -owide
 kube-system              kube-apiserver-kind-control-plane             1/1     Running   0          24m     172.18.0.2    kind-control-plane   <none>           <none>
 172.18.0.2
+```
+#### edit kubefedcluster and change apiEndpoint to 172.18.0.2:6443
+```
+kubectl -n kube-federation-system edit kubefedcluster
 ```
 ### 安装完成后查看federation
 ```

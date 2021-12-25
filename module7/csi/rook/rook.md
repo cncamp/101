@@ -12,7 +12,7 @@ Create a raw disk from virtualbox console and attach to the vm (must > 5G).
 
 ```sh
 delete ns rook-ceph
-for i in `kubectl api-resources | grep true | awk '{print \$1}'`; do echo $i;kubectl get $i -n rook-ceph; done
+for i in `kubectl api-resources | grep true | awk '{print \$1}'`; do echo $i;kubectl get $i -n clusternet-skgdp; done
 ```
 
 ### Checkout rook

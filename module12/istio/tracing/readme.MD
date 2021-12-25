@@ -7,9 +7,8 @@ set tracing.sampling=100
 ```
 
 ### Deploy tracing
-
 ```sh
-kubectl apply ns tracing
+kubectl create ns tracing
 kubectl label ns tracing istio-injection=enabled
 kubectl -n tracing apply -f service0.yaml
 kubectl -n tracing apply -f service1.yaml
