@@ -13,6 +13,7 @@ kubectl get po -n calico-demo -owide
 ### start clientpod
 ```
 kubectl apply -f toolbox.yaml
+kubectl apply -f toolbox.yaml -n calico-demo
 ```
 ### enter toolbox shell
 ```
@@ -27,7 +28,16 @@ ping <calico-pod-ip>
 ```
 kubectl create -f allow-icmp-incluster.yaml
 ```
-### test connectivity
+### test connectivity from two toolbox pod
+```
+curl <calico-pod-ip>
+ping <calico-pod-ip>
+```
+### create networkpolicy to allow access
+```
+kubectl create -f access-calico-demo.yaml
+```
+### test connectivity from two toolbox pod
 ```
 curl <calico-pod-ip>
 ping <calico-pod-ip>
