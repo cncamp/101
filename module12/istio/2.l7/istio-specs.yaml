@@ -28,3 +28,18 @@ spec:
           host: nginx.simple.svc.cluster.local
           port:
             number: 80
+---
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: simple
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - hosts:
+        - simple.cncamp.io
+      port:
+        name: http-simple
+        number: 80
+        protocol: HTTP
