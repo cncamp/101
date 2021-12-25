@@ -20,9 +20,7 @@ cd loki-stack
 ```
 ### replace all `rbac.authorization.k8s.io/v1beta1` with `rbac.authorization.k8s.io/v1` by 
 ```
-sed -i s#rbac.authorization.k8s.io/v1beta1#rbac.authorization.k8s.io/v1#g *.yaml
-
-sed -i s#rbac.authorization.k8s.io/v1beta1#rbac.authorization.k8s.io/v1#g `grep -rl "rbac.authorization.k8s.io/v1beta1"  ./loki-stack/ `
+grep -rl "rbac.authorization.k8s.io/v1beta1" . | xargs sed -i 's/rbac.authorization.k8s.io\/v1beta1/rbac.authorization.k8s.io\/v1/g'
 ```
 ### install loki locally
 ```
