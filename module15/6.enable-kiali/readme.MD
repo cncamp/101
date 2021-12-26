@@ -1,6 +1,6 @@
 ### install prometheus
 
-kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.12/samples/addons/prometheus.yaml
+kubectl apply -f prometheus.yaml
 
 ### install kiali
 ```
