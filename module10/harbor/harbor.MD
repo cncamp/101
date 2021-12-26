@@ -37,29 +37,33 @@ http://192.168.34.2:30002
 admin/Harbor12345
 ```
 
-### Add insecure registry to docker client and restart docker
+### Download repository certs from
 
-```json
-{
-  "features": {
-    "buildkit": true
-  },
-  "experimental": false,
-  "builder": {
-    "gc": {
-      "enabled": true,
-      "defaultKeepStorage": "20GB"
-    }
-  },
-  "insecure-registries": ["core.harbor.domain:32177"]
-}
+```sh
+https://192.168.34.2:30003/harbor/projects/1/repositories
+```
+
+### Copy the downloaded ca.crt to vm docker certs configuration folder
+
+```sh
+mkdir /etc/docker/certs.d/core.harbor.domain
+copy the ca.crt to this folder
+systemctl restart docker
+```
+
+### Edit /etc/hosts to map core.harbor.domain to harbor svc clusterip
+
+```sh
+10.104.231.99 core.harbor.domain
 ```
 
 ### Docker login
 
 ```sh
-docker login -u harbor_registry_user -p harbor_registry_password core.harbor.domain:32083
+docker login -u admin -p Harbor12345 core.harbor.domain
 ```
+
+### Docker tag a image to core.harbor.domain and push it and you will see it in harbor portal
 
 ### Check repositories and blobs
 
