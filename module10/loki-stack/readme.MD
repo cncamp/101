@@ -13,7 +13,7 @@ Error: unable to build kubernetes objects from release manifest: [unable to reco
 ### download loki-stack
 ```
 helm pull grafana/loki-stack
-tar -xvf loki-stack-2.4.1.tgz
+tar -xvf loki-stack-*.tgz
 ```
 ```
 cd loki-stack
@@ -27,6 +27,21 @@ grep -rl "rbac.authorization.k8s.io/v1beta1" . | xargs sed -i 's/rbac.authorizat
 helm upgrade --install loki ./loki-stack --set grafana.enabled=true,prometheus.enabled=true,prometheus.alertmanager.persistentVolume.enabled=false,prometheus.server.persistentVolume.enabled=false
 ```
 ### change the grafana service to NodePort type and access it
+```
+kubectl edit svc loki-grafana -oyaml -n default
+change ClusterIP type to NodePort
+```
 login password is in secret `loki-grafana`
+```
+kubectl get secret loki-grafana -oyaml -n default
+```
+find admin-password: xxx
+```
+echo 'xxx' | base64 -d
+```
+then you will get grafana login password, the login username is 'admin' on default.
+
+note: the xxx is value of key  admin-password in your yaml.
+
 ###
 
