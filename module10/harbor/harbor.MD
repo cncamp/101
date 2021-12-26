@@ -6,7 +6,7 @@ kubectl create ns harbor
 ```
 ### update values.yaml
 ```
-vi .harbor/values.yaml and change
+vi ./harbor/values.yaml and change
 
 
 expose:
@@ -25,28 +25,26 @@ helm install harbor ./harbor -n harbor
 192.168.34.2:30002
 admin/Harbor12345
 ```
-### add insecure registry to docker client and restart docker
+### download repository certs from 
 ```
-{
-  "features": {
-    "buildkit": true
-  },
-  "experimental": false,
-  "builder": {
-    "gc": {
-      "enabled": true,
-      "defaultKeepStorage": "20GB"
-    }
-  },
-  "insecure-registries": [
-    "core.harbor.domain:32177"
-  ]
-}
+https://192.168.34.2:30003/harbor/projects/1/repositories
+```
+### copy the downloaded ca.crt to vm docker certs configuration folder
+```
+mkdir /etc/docker/certs.d/core.harbor.domain
+copy the ca.crt to this folder
+systemctl restart docker
+```
+### edit /etc/hosts to map core.harbor.domain to harbor svc clusterip
+```
+10.104.231.99 core.harbor.domain
 ```
 ### docker login
 ```
-docker login -u harbor_registry_user -p harbor_registry_password core.harbor.domain:32083
+docker login -u admin -p Harbor12345 core.harbor.domain
 ```
+### docker tag a image to core.harbor.domain and push it and you will see it in harbor portal
+
 ### check repositories and blobs
 ```
 kubectl exec -it harbor-registry-7d686859d7-xs5nv -n harbor bash
