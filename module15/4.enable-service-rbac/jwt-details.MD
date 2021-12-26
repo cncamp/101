@@ -28,10 +28,13 @@ cat productpage-v2/productpage.py
 ### build docker images for productpage v2 with jwt token
 ### create product page v2
 ```
-kubectl apply -f productpage-v2/productpage.py
+kubectl apply -f productpage-v2/productpage.yaml
 ```
 ### access productpage and you will see error in 50% percents
 ```
 Sorry, product details are currently unavailable for this book.
 ```
+### scale done v1 and keep v2 only
 ### this is how microservice talks to each others with jwt token
+- requestauthentication defines how the jwt token can be decrypted
+- authorizationpolicy defines how the request SPIFFE or request princile being authorized

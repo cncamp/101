@@ -70,3 +70,11 @@ EOF
 kubectl exec "$(kubectl get pod -l app=sleep -n bar -o jsonpath={.items..metadata.name})" -c sleep -n bar -- curl http://httpbin.foo:8000/headers
 kubectl exec "$(kubectl get pod -l app=sleep -n foo -o jsonpath={.items..metadata.name})" -c sleep -n foo -- curl http://httpbin.foo:8000/headers
 ```
+### clean up
+```
+k get authorizationpolicies -A
+k get pa -A
+k get ra -A
+k get gw -A
+k get vs -A
+```
