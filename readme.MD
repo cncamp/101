@@ -12,7 +12,8 @@
 |     9     |                 Managing Production-ready Kubernetes Clusters                  |     [module9](module9)     |
 |    10     |                      DevOps with Kubernetes in Production                      |    [module10](module10)    |
 |    11     |                          Migrating apps to Kubernetes                          |    [module11](module11)    |
-|    12     |                     Advanced Traffic Management with Istio                     |    [module11](module12)    |
+|    12     |                     Advanced Traffic Management with Istio                     |    [module12](module12)    |
+|    13     |           Cluster Federation and Multi-cluster management with Istio           |    [module13](module13)    |
 
 ## Microservice
 

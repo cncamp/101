@@ -1,6 +1,8 @@
-## install kubectl clusternet plugin
-### install krew
-```
+## Install kubectl clusternet plugin
+
+### Install krew
+
+```sh
 (
   set -x; cd "$(mktemp -d)" &&
   OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
@@ -10,35 +12,44 @@
   tar zxvf "${KREW}.tar.gz" &&
   ./"${KREW}" install krew
 )
+```
 
-```
-### setup krew
-```
+### Setup krew
+
+```sh
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 kubectl krew
 ```
-### install clusternet plugin
-```
+
+### Install clusternet plugin
+
+```sh
 kubectl krew update
 kubectl krew install clusternet
 kubectl clusternet version
 ```
-## setup clusternet control plane
-### parent cluster
-```
+
+## Setup clusternet control plane
+
+### Parent cluster
+
+```sh
 helm repo add clusternet https://clusternet.github.io/charts
 helm install clusternet-hub -n clusternet-system --create-namespace clusternet/clusternet-hub
 kubectl apply -f https://raw.githubusercontent.com/clusternet/clusternet/main/manifests/samples/cluster_bootstrap_token.yaml
 ```
-### child cluster, registrationToken is installed in kube-system
-```
+
+### Child cluster, registrationToken is installed in kube-system
+
+```sh
 helm install clusternet-agent -n clusternet-system --create-namespace \
 --set parentURL=https://192.168.34.2:6443 \
 --set registrationToken=07401b.f395accd246ae52d \
 clusternet/clusternet-agent
 ```
-### check managed clusters
-```
+
+### Check managed clusters
+
+```sh
 kubectl get managedcluster -A
 ```
-

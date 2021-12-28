@@ -1,22 +1,28 @@
-### create deployment in host cluster
-```
+### Create deployment in host cluster
+
+```sh
 kubectl clusternet apply -f deployment.yaml
 ```
-### where the object being stored, as manifest object in clusternet-reserved
-```
+
+### Where the object being stored, as manifest object in clusternet-reserved
+
+```sh
 k get manifest -A
 NAMESPACE             NAME                       AGE
 clusternet-reserved   deployments-foo-my-nginx   9h
 clusternet-reserved   namespaces-foo             9h
 ```
-### link the deployment and target cluster
-```
+
+### Link the deployment and target cluster
+
+```sh
 kubectl apply -f localization.yaml
 kubectl apply -f subscription.yaml
+```
 
-```
-### check generated obj
-```
+### Check generated obj
+
+```sh
 k get base -A
 NAMESPACE          NAME       AGE
 clusternet-bmqv4   app-demo   9h
@@ -26,7 +32,7 @@ NAMESPACE          NAME               DEPLOYER   STATUS    AGE
 clusternet-bmqv4   app-demo-generic   Generic    Success   9h
 ```
 
-```
+```sh
 etcdctl --endpoints https://127.0.0.1:2379 \
 --cacert /etc/kubernetes/pki/etcd/ca.crt \
 --cert /etc/kubernetes/pki/etcd/server.crt \
