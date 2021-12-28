@@ -1,5 +1,6 @@
-### sync VM time with host
-```
+### Sync VM time with host
+
+```sh
 shutdown vm
 cd ~/"VirtualBox VMs"
 VBoxManage list vms
@@ -7,10 +8,12 @@ VBoxManage list vms
 vboxmanage setextradata "localkube" "VBoxInternal/Devices/VMMDev/0/Config/GetHostTimeDisabled" "1"
 vboxmanage setextradata "crane" "VBoxInternal/Devices/VMMDev/0/Config/GetHostTimeDisabled" "1"
 ```
-### start VM and then you can get prometheus data
 
-### grafana dashboard
-```
+### Start VM and then you can get prometheus data
+
+### Grafana dashboard
+
+```sh
 cluster health
 6417
 pod dashboard

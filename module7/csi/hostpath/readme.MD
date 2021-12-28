@@ -1,26 +1,35 @@
-### create a host folder
-```
+### Create a host folder
+
+```sh
 sudo mkdir /mnt/data
 ```
-### create a file in the folder
-```
+
+### Create a file in the folder
+
+```sh
 sudo sh -c "echo 'Hello from Kubernetes storage' > /mnt/data/index.html"
 ```
-### check the file
-```
+
+### Check the file
+
+```sh
 cat /mnt/data/index.html
 ```
-### create a pv
-```
+
+### Create a pv
+
+```sh
 kubectl apply -f pv.yaml
 ```
-### create a pvc
-```
+
+### Create a pvc
+
+```sh
 kubectl apply -f pvc.yaml
 ```
-### create a pod
-```
-### create a pv
-```
+
+### Create a pod
+
+```sh
 kubectl apply -f pod.yaml
 ```
