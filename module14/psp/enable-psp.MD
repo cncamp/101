@@ -1,13 +1,11 @@
-```
-### create privileged psp, and grant psp to kubernetes key components
-```
-kubectl apply -f templates
-```
+### Edit apiserver parameter
 
-### edit apiserver parameter
-```
+```sh
 vi /etc/kubernetes/manifests/kube-apiserver.yaml
 ```
-### add the following in args, and wait for api to come back
-```
+
+### Add the following in args, and wait for api to come back
+
+```sh
 --enable-admission-plugins=PodSecurityPolicy
+```

@@ -1,20 +1,27 @@
-### prepare
-```
+### Prepare
+
+```sh
 kubectl create namespace psp-example
 kubectl create serviceaccount -n psp-example fake-user
 kubectl create rolebinding -n psp-example fake-editor --clusterrole=edit --serviceaccount=psp-example:fake-user
 ```
-### create alias to simulate users
-```
+
+### Create alias to simulate users
+
+```sh
 alias kubectl-admin='kubectl -n psp-example'
 alias kubectl-user='kubectl --as=system:serviceaccount:psp-example:fake-user -n psp-example'
 ```
-### create psp
+
+### Create psp
+
+```sh
+kubectl-admin create -f example-psp.yaml
 ```
-kubectl-admin apply -f example-psp.yaml
-```
-### try pod creation will fail as the psp admit is not passed
-```
+
+### Try pod creation will fail as the psp admit is not passed
+
+```sh
 kubectl-user create -f- <<EOF
 apiVersion: v1
 kind: Pod
@@ -26,26 +33,33 @@ spec:
       image: k8s.gcr.io/pause
 EOF
 ```
-### check permission
-```
+
+### Check permission
+
+```sh
 kubectl-user auth can-i use podsecuritypolicy/example
 ```
-### create a role which use the psp
-```
+
+### Create a role which use the psp
+
+```sh
 kubectl-admin create role psp:unprivileged \
     --verb=use \
     --resource=podsecuritypolicy \
     --resource-name=example
 ```
-### bind the role to user
-```
+
+### Bind the role to user
+
+```sh
 kubectl-admin create rolebinding fake-user:psp:unprivileged \
     --role=psp:unprivileged \
     --serviceaccount=psp-example:fake-user
 ```
-### create the pod again
 
-```
+### Create the pod again
+
+```sh
 kubectl-user create -f- <<EOF
 apiVersion: v1
 kind: Pod
@@ -57,8 +71,10 @@ spec:
       image: k8s.gcr.io/pause
 EOF
 ```
-### clean up
-```
+
+### Clean up
+
+```sh
 kubectl delete psp example
 kubectl delete ns psp-example
 ```
