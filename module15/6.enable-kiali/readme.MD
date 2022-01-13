@@ -1,16 +1,21 @@
-### install prometheus
+### Install prometheus
 
+```sh
 kubectl apply -f prometheus.yaml
-
-### install kiali
 ```
+
+### Install kiali
+
+```sh
 kubectl apply -f samples/addons/kiali.yaml
 ```
-### update kiali svc to NodePort
-```
+
+### Update kiali svc to NodePort
+
+```sh
 k edit svc kiali -n istio-system
 ```
-### access kiali, go graph, select all namespaces 
-```
+
+### Access kiali, go to graph, select all namespaces
+
 http://192.168.34.2:31816/
-```

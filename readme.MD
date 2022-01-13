@@ -15,6 +15,7 @@
 |    12     |                     Advanced Traffic Management with Istio                     |    [module12](module12)    |
 |    13     |           Cluster Federation and Multi-cluster management with Istio           |    [module13](module13)    |
 |    14     |                  Security Assurance with Kubernetes and Istio                  |    [module14](module14)    |
+|    15     |              Microservice Development and Deployment in Practice               |    [module15](module15)    |
 
 ## Microservice
 

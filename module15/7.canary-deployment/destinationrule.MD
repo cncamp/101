@@ -1,13 +1,19 @@
-### create dr for all services, this defines multiple subsets for all services 
-```
+### Create dr for all services, this defines multiple subsets for all services
+
+```sh
 kubectl apply -f samples/bookinfo/networking/destination-rule-all.yaml
 ```
-### define virtualservice to route all traffic to v1
-```
+
+### Define virtualservice to route all traffic to v1
+
+```sh
 kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
 ```
-### shift all request from jason to v2 
-```
+
+### Shift all request from jason to v2
+
+```sh
 kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-test-v2.yaml
 ```
-### On the /productpage of the Bookinfo app, log in as user jason.
+
+### On the `/productpage` of the Bookinfo app, log in as user jason.
