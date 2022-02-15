@@ -5,6 +5,15 @@ kubectl create ns sidecar
 kubectl label ns sidecar istio-injection=enabled
 kubectl apply -f nginx.yaml -n sidecar
 kubectl apply -f toolbox.yaml -n sidecar
+
+# 查看webhook
+[root@master1 sidecar]# k get mutatingwebhookconfigurations
+NAME                         WEBHOOKS   AGE
+istio-revision-tag-default   4          90m
+istio-sidecar-injector       4          92m
+[root@master1 sidecar]# 
+[root@master1 sidecar]# k get mutatingwebhookconfigurations  istio-sidecar-injector  -oyaml
+
 ```
 
 ### Check clusters
