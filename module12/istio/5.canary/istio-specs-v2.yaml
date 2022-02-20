@@ -7,14 +7,21 @@ spec:
     - canary
   http:
     - match:
-        - headers:
-            user:
-              exact: jesse
+        - uri:
+            exact: "/etc"
+      rewrite:
+        uri: "/"
       route:
         - destination:
             host: canary
             subset: v2
-    - route:
+
+    - match:
+        - uri:
+            exact: "*"
+      rewrite:
+        uri: "/"
+      route:
         - destination:
             host: canary
             subset: v1
