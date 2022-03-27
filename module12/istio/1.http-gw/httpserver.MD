@@ -9,7 +9,7 @@ kubectl create -f istio-specs.yaml -n simple
 ### Check ingress ip
 
 ```sh
-k get svc -nistio-system
+k get svc -n istio-system
 
 istio-ingressgateway   LoadBalancer   10.108.31.242
 ```

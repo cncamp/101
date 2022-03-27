@@ -1,64 +1,81 @@
-## install kubefed by kind
-### 下载federation代码
-```
+### 下载 federation 代码
+
+```sh
 git clone https://github.com/kubernetes-sigs/kubefed.git
 ```
-### 选择HostCluster，确认kubeconfig符合federatio命名规范，用vi编辑kubeconfig，确保context属性没用@字符
-```
-vi ~/.kube/config 
+
+### 选择 HostCluster，确认 kubeconfig 符合 federatio 命名规范，用 vi 编辑 kubeconfig，确保 context 属性没用@字符
+
+```sh
+vi ~/.kube/config
 ```
 
+```yaml
 contexts:
 - context:
-    cluster: kubernetes
-    user: kubernetes-admin
+  cluster: kubernetes
+  user: kubernetes-admin
   name: `cluster1`
-current-context: `cluster1`
+  current-context: `cluster1`
+```
 
 ### 安装
-```
+
+```sh
 kind create cluster
 make deploy.kind
 kubectl -n kube-federation-system get kubefedcluster -oyaml
 ```
-### fix
-```
-k get po -n kube-system kube-apiserver-kind-control-plane -owide
+
+### Fix
+
+```sh
+k get po -n kube-system kube-apiserver-kind-control-plane
 kube-system              kube-apiserver-kind-control-plane             1/1     Running   0          24m     172.18.0.2    kind-control-plane   <none>           <none>
 172.18.0.2
 ```
-#### edit kubefedcluster and change apiEndpoint to 172.18.0.2:6443
-```
-kubectl -n kube-federation-system edit kubefedcluster
-```
-### 安装完成后查看federation
-```
+
+### 安装完成后查看 federation
+
+```sh
 kubectl get all -n kube-federation-system
 ```
-### 将namespace设置为联邦对象
-```
+
+### 将 namespace 设置为联邦对象
+
+```sh
 kubectl create ns federate-me
 ./bin/kubefedctl federate ns federate-me
+```
 
-```
-### 创建FederatedDeployment
-```
+### 创建 FederatedDeployment
+
+```sh
 kubectl apply -f test-deployment.yaml -n federate-me
 ```
-### 查看membercluster中的deployment对象
-```
+
+### 查看 membercluster 中的 deployment 对象
+
+```sh
 kubectl get deployment test-deployment -n federate-me
 ```
-### 创建RSP对象
-```
+
+### 创建 RSP 对象
+
+```sh
 kubectl apply -f test-deployment-rsp.yaml -n federate-me
 ```
-### 查看membercluster中的deployment对象
-```
+
+### 查看 membercluster 中的 deployment 对象
+
+```sh
 kubectl get deployment test-deployment -n federate-me
 ```
-### 查看federatedployment，会发现因为rsp，federateddeployment的override属性被更新了
-```
+
+### 查看 federatedployment，会发现因为 rsp，federateddeployment 的 override 属性被更新了
+
+```sh
 kubectl get federateddeployment test-deployment -n federate-me
 ```
-### 删除rsp，发现override没有被拿掉
+
+### 删除 rsp，发现 override 没有被拿掉

@@ -15,7 +15,7 @@ kubectl apply -f istio-specs.yaml -n securesvc
 ### Check ingress ip
 
 ```sh
-k get svc -nistio-system
+k get svc -n istio-system
 
 istio-ingressgateway   LoadBalancer   $INGRESS_IP
 ```

@@ -1,5 +1,6 @@
-### add client time settings
-```
+### Add client time settings
+
+```sh
 kubectl apply -f - <<EOF
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -16,8 +17,10 @@ spec:
     timeout: 0.5s
 EOF
 ```
-### add circuit breaker
-```
+
+### Add circuit breaker
+
+```sh
 kubectl apply -f - <<EOF
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
@@ -52,8 +55,10 @@ spec:
       maxEjectionPercent: 100
 EOF
 ```
-### access product page in a loop
-```
+
+### Access product page in a loop
+
+```sh
 for i in `seq 1 100`;
 do curl -k https://192.168.34.2:31106/productpage;
 done;

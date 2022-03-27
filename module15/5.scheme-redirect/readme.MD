@@ -1,8 +1,11 @@
-### apply gateway with tls redirect setting
-```
+### Apply gateway with tls redirect setting
+
+```sh
 kubectl apply -f https-gateway.yaml
 ```
-access gateway via http port
-```
+
+### Access gateway via http port
+
+```sh
 curl 10.109.127.136/productpage -v -L -k
 ```

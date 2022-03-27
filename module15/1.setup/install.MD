@@ -1,23 +1,28 @@
-### install istio follow by module12
-```
+### Install istio follow by module12
+
+```sh
 cd /root/istio-1.12.0
 ```
-### install bookinfo
-```
+
+### Install bookinfo
+
+```sh
 kubectl label namespace default istio-injection=enabled
 kubectl apply -f <(istioctl kube-inject -f samples/bookinfo/platform/kube/bookinfo.yaml)
 ```
 
-### expose the application via istio ingress gateway
-```
+### Expose the application via istio ingress gateway
+
+```sh
 kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
 ```
-### check ingress vip
-```
+
+### Check ingress vip
+
+```sh
 export GATEWAY_URL=192.168.34.2:31783
 ```
-### access the productpage via
-```
-http://192.168.34.2:31783/productpage
-```
 
+### Access the productpage via
+
+http://192.168.34.2:31783/productpage

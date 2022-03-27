@@ -1,5 +1,6 @@
-### expose httpbin through gateway
-```
+### Expose httpbin through gateway
+
+```sh
 kubectl apply -f - <<EOF
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
@@ -18,7 +19,8 @@ spec:
     - "*"
 EOF
 ```
-```
+
+```sh
 kubectl apply -f - <<EOF
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -38,8 +40,10 @@ spec:
         host: httpbin.foo.svc.cluster.local
 EOF
 ```
-### define a RequestAuthentication to valid jwt token if provided
-```
+
+### Define a RequestAuthentication to valid jwt token if provided
+
+```sh
 kubectl apply -f - <<EOF
 apiVersion: security.istio.io/v1beta1
 kind: RequestAuthentication
@@ -55,20 +59,27 @@ spec:
     jwksUri: "https://raw.githubusercontent.com/istio/istio/release-1.12/security/tools/jwt/samples/jwks.json"
 EOF
 ```
-### access the gateway service with invalid jwt token will return 401
-```
+
+### Access the gateway service with invalid jwt token will return 401
+
+```sh
 curl 192.168.34.2:31783 --header "Authorization: Bearer deadbeef" -s -o /dev/null -w "%{http_code}\n"
 ```
-### access the gateway service with valid token or without token returns 200
-```
+
+### Access the gateway service with valid token or without token returns 200
+
+```sh
 curl 192.168.34.2:31783/headers
 ```
-```
+
+```sh
 TOKEN=$(curl https://raw.githubusercontent.com/istio/istio/release-1.12/security/tools/jwt/samples/demo.jwt -s)
 curl --header "Authorization: Bearer $TOKEN" "192.168.34.2:31783/headers" -s -o /dev/null -w "%{http_code}\n"
 ```
-### requires a token(request without tokwn will return 401)
-```
+
+### Requires a token (Requests without token will return 401)
+
+```sh
 kubectl apply -f - <<EOF
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
@@ -86,7 +97,9 @@ spec:
         notRequestPrincipals: ["*"]
 EOF
 ```
-### only request with valid token will be accepted 
-```
+
+### Only requests with valid token will be accepted
+
+```sh
 curl --header "Authorization: Bearer $TOKEN" "192.168.34.2:31783/headers" -s -o /dev/null -w "%{http_code}\n"
 ```
