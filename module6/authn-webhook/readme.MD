@@ -33,7 +33,7 @@ vi ~/.kube/config
 ```yaml
 - name: mfanjie
   user:
-  token: <mytoken>
+    token: <mytoken>
 ```
 
 ### Get pods by mfanjie
