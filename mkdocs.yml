@@ -1,0 +1,59 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
+site_name: Kubernetes 101
+docs_dir: .
+theme:
+  name: material
+#  custom_dir: overrides
+  language: en
+  features:
+    - content.code.annotate
+    - navigation.top
+  palette:
+    primary: blue
+#  logo: images/crane.svg
+#  favicon: images/crane.svg
+  font:
+    text: Work Sans
+extra_javascript:
+  - assets/util.js
+extra_css:
+  - assets/util.css
+extra:
+  version:
+    provider: mike
+    default: latest
+plugins:
+  - search
+  - same-dir
+  - i18n:
+      default_language: zh
+      languages:
+        en:
+          name: English
+          build: true
+        zh:
+          name: 简体中文
+          build: true
+      nav_translations:
+        zh:
+          Getting Started: 从这里开始
+markdown_extensions:
+  - codehilite
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      use_pygments: true
+      linenums: true
+      linenums_style: pymdownx-inline
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+repo_url: https://github.com/cncamp/101
+repo_name: cncamp/101
+nav:
+  - Getting Started:
+      - Introduction: index.md
