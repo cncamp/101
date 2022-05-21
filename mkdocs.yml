@@ -38,6 +38,8 @@ plugins:
         zh:
           Getting Started: 从这里开始
 markdown_extensions:
+  - attr_list
+  - md_in_html
   - codehilite
   - admonition
   - toc:
@@ -49,7 +51,11 @@ markdown_extensions:
       linenums_style: pymdownx-inline
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
 repo_url: https://github.com/cncamp/101
@@ -57,3 +63,8 @@ repo_name: cncamp/101
 nav:
   - Getting Started:
       - Introduction: index.md
+  - Install Kubernetes Cluster:
+    - Overview: k8s-install/readme.md
+    - Install Kubernetes Via Kubeadm In Ubuntu: k8s-install/k8s-by-kubeadm/index.md
+    - Install Kubernetes Via Kubeadm In CentOS: k8s-install/kubeadm-centos7-install.md
+    - kind: k8s-install/kind.md
