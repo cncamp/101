@@ -3,6 +3,12 @@
 ```sh
 ./create_cluster.sh
 ```
+### Install clusterctl
+
+```sh
+brew install clusterctl
+```
+Reference:https://cluster-api.sigs.k8s.io/user/quick-start.html#install-clusterctl
 
 ### Generate cluster specs
 
