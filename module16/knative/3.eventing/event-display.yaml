@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-display
+spec:
+  replicas: 1
+  selector:
+    matchLabels: &labels
+      app: event-display
+  template:
+    metadata:
+      labels: *labels
+    spec:
+      containers:
+        - name: helloworld-go
+          # Source code: https://github.com/knative/eventing/tree/main/cmd/event_display
+          image: mfanjie/event_display
+---
+# Service that exposes event-display app.
+# This will be the subscriber for the Trigger
+kind: Service
+apiVersion: v1
+metadata:
+  name: event-display
+spec:
+  selector:
+    app: event-display
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: event-display
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: dev.knative.samples.hifromknative
+      source: knative/eventing/samples/hello-world
+  subscriber:
+    ref:
+      apiVersion: v1
+      kind: Service
+      name: event-display

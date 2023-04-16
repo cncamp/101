@@ -1,0 +1,14 @@
+serviceMonitor:
+  enabled: true
+  namespace: "monitoring"
+  additionalServiceMonitorLabels:
+    release: "prometheus"
+podMonitor:
+  enabled: true
+  namespace: "monitoring"
+  additionalPodMonitorLabels:
+    release: "prometheus"
+grafana:
+  namespace: "monitoring"
+  dashboards:
+    enable: true

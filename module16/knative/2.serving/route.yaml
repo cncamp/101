@@ -1,0 +1,9 @@
+apiVersion: serving.knative.dev/v1
+kind: Route
+metadata:
+  name: fn
+spec:
+  traffic:
+    - configurationName: fn
+      latestRevision: true
+      percent: 100

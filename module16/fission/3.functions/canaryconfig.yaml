@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    meta.helm.sh/release-name: fission
+    meta.helm.sh/release-namespace: fission
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    application: fission-canaryconfig
+    chart: fission-all-v1.18.0
+    svc: canaryconfig
+  name: canaryconfig
+  namespace: fission
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: fission-canaryconfig
+      svc: canaryconfig
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+      labels:
+        application: fission-canaryconfig
+        svc: canaryconfig
+    spec:
+      containers:
+      - args:
+        - --canaryConfig
+        command:
+        - /fission-bundle
+        env:
+        - name: DEBUG_ENV
+          value: "false"
+        - name: PPROF_ENABLED
+          value: "false"
+        - name: FISSION_RESOURCE_NAMESPACES
+          value: default
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        - name: OTEL_EXPORTER_OTLP_INSECURE
+          value: "true"
+        - name: OTEL_TRACES_SAMPLER
+          value: parentbased_traceidratio
+        - name: OTEL_TRACES_SAMPLER_ARG
+          value: "0.1"
+        - name: OTEL_PROPAGATORS
+          value: tracecontext,baggage
+        - name: PROMETHEUS_SERVER_SERVICE_HOST
+          value: prometheus-kube-prometheus-prometheus.monitoring
+        - name: PROMETHEUS_SERVER_SERVICE_PORT
+          value: "9090"
+        image: index.docker.io/fission/fission-bundle:v1.18.0
+        imagePullPolicy: IfNotPresent
+        name: canaryconfig
+        ports:
+        - containerPort: 8080
+          name: metrics
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/config/config.yaml
+          name: config-volume
+          subPath: config.yaml
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+      serviceAccount: fission-canaryconfig
+      serviceAccountName: fission-canaryconfig
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: feature-config
+        name: config-volume

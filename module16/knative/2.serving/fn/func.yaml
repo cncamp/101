@@ -1,0 +1,26 @@
+specVersion: 0.34.0
+name: fn
+runtime: go
+registry: docker.io/mfanjie
+image: docker.io/mfanjie/fn:latest
+imageDigest: ""
+created: 2023-01-27T10:44:35.874353+08:00
+invocation:
+  format: http
+build:
+  buildpacks:
+  - paketo-buildpacks/go-dist
+  - ghcr.io/boson-project/go-function-buildpack:tip
+  builder: pack
+  buildEnvs: []
+run:
+  volumes: []
+  envs: []
+deploy:
+  namespace: default
+  annotations: {}
+  options: {}
+  labels: []
+  healthEndpoints:
+    liveness: /health/liveness
+    readiness: /health/readiness

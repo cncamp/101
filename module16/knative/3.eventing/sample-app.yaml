@@ -1,0 +1,55 @@
+# A default broker
+apiVersion: eventing.knative.dev/v1
+kind: Broker
+metadata:
+  name: default
+  annotations:
+    # Note: you can set the eventing.knative.dev/broker.class annotation to change the class of the broker.
+    # The default broker class is MTChannelBasedBroker, but Knative also supports use of the other class.
+    eventing.knative.dev/broker.class: MTChannelBasedBroker
+spec: {}
+---
+# Knative Eventing Trigger to trigger the helloworld-go service
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: helloworld-go
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: dev.knative.samples.helloworld
+      source: dev.knative.samples/helloworldsource
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: helloworld-go
+---
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: helloworld-go
+spec:
+  template:
+    spec:
+      containerConcurrency: 0
+      containers:
+        - env:
+            - name: TARGET
+              value: World
+          image: mfanjie/helloworld-go
+          name: user-container
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            successThreshold: 1
+            tcpSocket:
+              port: 0
+          resources: {}
+      enableServiceLinks: false
+      timeoutSeconds: 300
+  traffic:
+    - latestRevision: true
+      percent: 100
