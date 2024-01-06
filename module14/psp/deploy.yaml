@@ -13,7 +13,7 @@ spec:
         app: nginx
     spec:
       securityContext:
-        rounrunAsNonRoot: false
+        runAsNonRoot: false
       containers:
         - name: nginx
           image: nginx
