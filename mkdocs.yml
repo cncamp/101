@@ -57,3 +57,5 @@ repo_name: cncamp/101
 nav:
   - Getting Started:
       - Introduction: index.md
+hooks:
+  - poc_hook.py
