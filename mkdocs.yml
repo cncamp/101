@@ -3,15 +3,12 @@ site_name: Kubernetes 101
 docs_dir: .
 theme:
   name: material
-#  custom_dir: overrides
   language: en
   features:
     - content.code.annotate
     - navigation.top
   palette:
     primary: blue
-#  logo: images/crane.svg
-#  favicon: images/crane.svg
   font:
     text: Work Sans
 extra_javascript:
@@ -25,18 +22,8 @@ extra:
 plugins:
   - search
   - same-dir
-  - i18n:
-      default_language: zh
-      languages:
-        en:
-          name: English
-          build: true
-        zh:
-          name: 简体中文
-          build: true
-      nav_translations:
-        zh:
-          Getting Started: 从这里开始
+hooks:
+  - poc_hook.py
 markdown_extensions:
   - codehilite
   - admonition
@@ -57,5 +44,3 @@ repo_name: cncamp/101
 nav:
   - Getting Started:
       - Introduction: index.md
-hooks:
-  - poc_hook.py
