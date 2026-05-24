@@ -26,6 +26,23 @@ spec:
       kind: Service
       name: helloworld-go
 ---
+# Knative Eventing Trigger to trigger the helloworld-go service
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: event-display
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: dev.knative.samples.hifromknative
+      source: knative/eventing/samples/hello-world
+  subscriber:
+    ref:
+      apiVersion: v1
+      kind: Service
+      name: helloworld-go
+---
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
