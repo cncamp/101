@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: canary
+spec:
+  hosts:
+    - canary
+  http:
+    - match:
+        - uri:
+            exact: "/etc"
+      rewrite:
+        uri: "/"
+      route:
+        - destination:
+            host: canary
+            subset: v2
+
+    - match:
+        - uri:
+            exact: "*"
+      rewrite:
+        uri: "/"
+      route:
+        - destination:
+            host: canary
+            subset: v1
